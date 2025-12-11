@@ -1,0 +1,54 @@
+<?php
+
+namespace App\Models;
+
+use App\Models\Company;
+use App\Models\Image;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
+
+class Employee extends Authenticatable implements MustVerifyEmail
+{
+     use Notifiable;
+
+    protected $table = 'payroll_employees';
+    protected $hidden = ['password'];
+    protected $fillable = [
+        'company_id',
+        "employee_id",
+        "employee_name",
+        "designation",
+        "department_id",
+        "joining_date",
+        "contact_no",
+        "email",
+        "linkedin",
+        "nid",
+        "current_address",
+        "permanent_address",
+        "district",
+        "police_station",
+        "post_office",
+        "village",
+        "father",
+        "mother",
+        'avatar_id',
+        "password"
+    ];
+
+
+    public function company(){
+        return $this->belongsTo(Company::class,'company_id');
+    }
+    public function department(){
+        return $this->belongsTo(Department::class,'department_id');
+    }
+
+    public function avatar()
+    {
+        return $this->belongsTo(Image::class,'avatar_id');
+    }
+}
