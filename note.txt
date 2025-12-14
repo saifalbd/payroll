@@ -1,1 +1,5 @@
 sudo update-alternatives --config php
+
+git remote add origin https://github.com/saifalbd/payroll.git
+git branch -M main
+git push -u origin main
