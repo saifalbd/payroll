@@ -104,6 +104,7 @@
     &.active,
     &.show {
       color: var(--#{$prefix}navbar-active-color);
+    
     }
   }
 
@@ -210,6 +211,7 @@
           .nav-link {
             padding-right: var(--#{$prefix}navbar-nav-link-padding-x);
             padding-left: var(--#{$prefix}navbar-nav-link-padding-x);
+            font-size: large;
           }
         }
 

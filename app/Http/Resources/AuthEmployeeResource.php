@@ -16,6 +16,7 @@ class AuthEmployeeResource extends JsonResource
     {
         return [
             'companyName'=>$this->company->title,
+            'company_id'=>$this->company->id,
             'name'=>$this->employee_name,
             'id'=>$this->id,
             'avatar'=>'',

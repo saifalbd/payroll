@@ -1,6 +1,6 @@
 import axios from 'axios';
 window.axios = axios;
-
+import * as bootstrap from 'bootstrap/dist/js/bootstrap.bundle';
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 import { ZiggyVue } from 'ziggy-js'
 
@@ -14,8 +14,9 @@ createInertiaApp({
     },
     setup({ el, App, props, plugin }) {
         createApp({ render: () => h(App, props) })
-.use(ZiggyVue, props.initialPage.props.ziggy)
+            .use(ZiggyVue, props.initialPage.props.ziggy)
             .use(plugin)
+            .provide('bootstrap', bootstrap)
             .mount(el)
     },
 })

@@ -35,7 +35,7 @@ class Employee extends Authenticatable implements MustVerifyEmail
         "village",
         "father",
         "mother",
-        'avatar_id',
+        'avatar',
         "password"
     ];
 

@@ -67,12 +67,16 @@ import { useForm } from '@inertiajs/vue3';
 
 const form = useForm({
     type: null,
-    email: 'bookmanbd@outlook.com',
-    password: '12345'
+    email: 'computer@gmail.com',
+    password: '12345678'
 })
 const login = () => {
     try {
 
+        /*
+          email: 'bookmanbd@outlook.com',
+    password: '12345'
+    */
 
         form.post(route('login.post'))
 

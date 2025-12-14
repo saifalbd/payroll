@@ -43,25 +43,46 @@ class AuthController extends Controller
             return null;
         }
 
+       // dd($has);
+
         $modelPass = $has->password;
 
-        if (!Hash::check($password, $modelPass)) {
-            throw ValidationException::withMessages([
-                'email' => [__('auth.failed')],
-                'password' => [__('auth.failed')],
-            ]);
-            return null;
-        }
+        // if (!Hash::check($password, $modelPass)) {
+        //     throw ValidationException::withMessages([
+        //         'email' => [__('auth.failed')],
+        //         'password' => [__('auth.failed')],
+        //     ]);
+        //     return null;
+        // }
 
+
+
+     
 
         Session::flush();
         if ($type == 'admin') {
             Auth::guard('web')->login($has);
+             return Inertia::location(route('admin.home'));
         } else {
             Auth::guard('employee')->login($has);
+             return Inertia::location(route('employee.home'));
         }
 
-     
-        return Inertia::location(route('home'));
+
+       
+    }
+
+    public function logoutEmployee()
+    {
+
+        Session::flush();
+        Auth::guard('employee')->logout();
+        return Inertia::location(route('login'));
+    }
+    public function logoutAdmin()
+    {
+        Session::flush();
+        Auth::guard('web')->logout();
+        return Inertia::location(route('login'));
     }
 }

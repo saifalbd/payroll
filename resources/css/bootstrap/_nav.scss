@@ -89,6 +89,7 @@
     border-color: var(--#{$prefix}nav-tabs-link-active-border-color);
   }
 
+  
   .dropdown-menu {
     // Make dropdown border overlap tab border
     margin-top: calc(-1 * var(--#{$prefix}nav-tabs-border-width)); // stylelint-disable-line function-disallowed-list

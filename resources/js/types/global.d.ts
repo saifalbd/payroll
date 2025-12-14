@@ -10,16 +10,16 @@ declare global {
 
 
   interface Auth {
-  companyName: string
-  name: string
-  id: number
-  avatar: string
-  email: string
-  phone: any
-  designation: string
-  department: string
-  has: string
-}
+    companyName: string
+    name: string
+    id: number
+    avatar: string
+    email: string
+    phone: any
+    designation: string
+    department: string
+    has: string
+  }
 
   interface User {
     id: number;
@@ -59,46 +59,46 @@ declare global {
     number_of_branch: number
     branches_count: string
     is_called: boolean
-        thumbnail: Thumbnail
+    thumbnail: Thumbnail
     called: {
-      id:string,
+      id: string,
       company_id: 387,
       is_call: 1,
-      summary:string
+      summary: string
     } | null
   }
 
 
   export interface Employee {
-  id: number
-  company_id: number
-  employee_id: number
-  employee_name: string
-  designation: string
-  department_id: number
-  joining_date: string
-  contact_no: string
-  email: string
-  linkedin: string
-  nid: string
-  current_address: string
-  permanent_address: string
-  district: string
-  police_station: string
-  post_office: string
-  village: string
-  father: string
-  mother: string
-  avatar_id: number
-  created_at: string
-  updated_at: string
-  company: Company
-  department:{
-    id:number
-    name:string
+    id: number
+    company_id: number
+    employee_id: number
+    employee_name: string
+    designation: string
+    department_id: number
+    joining_date: string
+    contact_no: string
+    email: string
+    linkedin: string
+    nid: string
+    current_address: string
+    permanent_address: string
+    district: string
+    police_station: string
+    post_office: string
+    village: string
+    father: string
+    mother: string
+    avatar_id: number
+    created_at: string
+    updated_at: string
+    company: Company
+    department: {
+      id: number
+      name: string
+    }
+    avatar: Thumbnail
   }
-  avatar:Thumbnail
-}
 
 
   interface Bill {
@@ -180,6 +180,49 @@ declare global {
     url: string
   }
 
+
+  export interface Ledger {
+    id: number
+    title: string
+
+  }
+  export interface Department {
+    id: number
+    name: string
+
+  }
+
+
+  export interface ScaleItem {
+    scale_id: number
+    payhead_id: number
+    payhead:PayHead
+    parcent_of:PayHead
+    calc_type: string
+    value: number
+    parcent_of_id: number
+    formula: '+' | '-' | '/' | '*'
+    basis: `${string}%`
+
+  }
+
+  export interface SalaryScale {
+    id: number
+    title: string
+    created_at: string
+    updated_at: string
+    items:ScaleItem[]
+  }
+  export interface PayHead {
+
+    id: number
+    title: string
+    type: string
+    ledger: Ledger
+    created_at: string
+    updated_at: string
+
+  }
 
 
 

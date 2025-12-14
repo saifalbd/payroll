@@ -17,6 +17,7 @@ $gray-700: #495057 !default;
 $gray-800: #343a40 !default;
 $gray-900: #212529 !default;
 $black:    #000 !default;
+$redcom : #ffbfbf !default;
 // scss-docs-end gray-color-variables
 
 // fusv-disable
@@ -40,7 +41,7 @@ $blue:    #0d6efd !default;
 $indigo:  #6610f2 !default;
 $purple:  #6f42c1 !default;
 $pink:    #d63384 !default;
-$red:     #dc3545 !default;
+$red:     #fb9a9a !default;
 $orange:  #fd7e14 !default;
 $yellow:  #ffc107 !default;
 $green:   #198754 !default;
@@ -305,7 +306,7 @@ $info:          $cyan !default;
 $warning:       $yellow !default;
 $danger:        $red !default;
 $light:         $gray-100 !default;
-$dark:          $gray-900 !default;
+$dark:          $redcom !default;
 // scss-docs-end theme-color-variables
 
 // scss-docs-start theme-colors-map
@@ -875,6 +876,7 @@ $form-text-color:                       var(--#{$prefix}secondary-color) !defaul
 
 // scss-docs-start form-label-variables
 $form-label-margin-bottom:              .5rem !default;
+$form-label-margin-top:              .5rem !default;
 $form-label-font-size:                  null !default;
 $form-label-font-style:                 null !default;
 $form-label-font-weight:                null !default;
@@ -1218,9 +1220,9 @@ $navbar-light-brand-hover-color:    $navbar-light-active-color !default;
 // scss-docs-end navbar-variables
 
 // scss-docs-start navbar-dark-variables
-$navbar-dark-color:                 rgba($white, .55) !default;
+$navbar-dark-color:                 rgba($black, .55) !default;
 $navbar-dark-hover-color:           rgba($white, .75) !default;
-$navbar-dark-active-color:          $white !default;
+$navbar-dark-active-color:          $black !default;
 $navbar-dark-disabled-color:        rgba($white, .25) !default;
 $navbar-dark-icon-color:            $navbar-dark-color !default;
 $navbar-dark-toggler-icon-bg:       url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'><path stroke='#{$navbar-dark-icon-color}' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/></svg>") !default;
