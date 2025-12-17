@@ -77,10 +77,10 @@
                                             <span class="mx-2">Edit</span>
                                         </a></li>
 
-                                    <li><a class="dropdown-item" href="#">
+                                    <li><button class="dropdown-item" @click="remove(item)">
                                             <i class="bi bi-trash"></i>
                                             <span class="mx-2">Delete</span>
-                                        </a></li>
+                                    </button></li>
 
                                 </ul>
                             </div>
@@ -277,6 +277,7 @@ import DataTable from 'datatables.net-vue3';
 import DataTablesCore from 'datatables.net-bs5';
 import { route } from 'ziggy-js';
 import { inject, onMounted, reactive, ref } from 'vue';
+import { deleteConfirm } from '../../../utility';
 const bootstrap = inject<any>('bootstrap');
 DataTable.use(DataTablesCore);
 
@@ -293,6 +294,16 @@ const showModel = (item: Employee) => {
     bs.show(document.body)
 }
 
+const remove = async (item:Employee)=>{
+    const is = await  deleteConfirm(``);
+    
+    try {
+        const url = route('admin.employee.destroy',{employee:item.id});
+       await window.axios.delete(url);
+    } catch (error) {
+        console.error(error);
+    }
+}
 onMounted(() => {
 
 })

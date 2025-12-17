@@ -51,4 +51,8 @@ class Employee extends Authenticatable implements MustVerifyEmail
     {
         return $this->belongsTo(Image::class,'avatar_id');
     }
+
+    public function salarySetup(){
+        return $this->hasOne(EmployeeSalarySetup::class,'employee_id');
+    }
 }
