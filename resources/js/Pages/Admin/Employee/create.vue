@@ -2,6 +2,10 @@
     <Layout :auth="auth">
         <div class="container-fluid d-flex justify-content-between align-items-center my-4">
             <h5 class="fw-bold ms-4" style="color: #e3342f">Create Employee</h5>
+            <Link type="button" class="btn btn-sm btn-primary me-4" :href="route('admin.employee.index')">
+                <i class="bi bi-arrow-left"></i>
+                <span class="mx-2">Back</span>
+            </Link>
         </div>
 
         <main>
@@ -175,6 +179,8 @@ import { ref } from "vue";
 import LoaderBox from "../../../components/LoaderBox.vue";
 import { values } from "lodash";
 import { head } from "lodash";
+import { Link } from '@inertiajs/vue3';
+
 const { auth } = defineProps<{
     auth: Auth
     departments: any

@@ -1,14 +1,12 @@
 <template>
     <Layout :auth="auth">
-        <nav class="navbar navbar-expand-lg bg-body-tertiary">
-            <div class="container-fluid">
-                <a class="navbar-brand">Payheads</a>
-                <button type="button" class="btn btn-dark" @click="showModel">
-                    <i class="bi bi-bookmark-plus"></i>
-                    <span class="mx-2">Create</span>
-                </button>
-            </div>
-        </nav>
+        <div class="container-fluid d-flex justify-content-between align-items-center my-4">
+            <h5 class="fw-bold ms-1" style="color: #e3342f">Payheads</h5>
+            <button type="button" class="btn btn-sm btn-primary" @click="showModel">
+                <i class="bi bi-bookmark-plus"></i>
+                <span class="mx-2">Create</span>
+            </button>
+        </div>
         <main class="container-fluid">
             <DataTable :options="options" class="table table-striped table-hover nowrap">
                 <thead>
@@ -65,17 +63,15 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-lg-12">
-                                <div class="card-header bg-dark-light  text-center p-2">
-                                    <h2>Add Payheads</h2>
-                                </div>
+                                <h4 class="fw-bold ms-1" style="color: #e3342f">Add Payheads</h4>
                             </div>
-                            <div class="col-lg-12">
+                            <div class="col-lg-12 mb-3">
                                 <label class="form-label" for="">Name</label>
                                 <input class="form-control form-control-lg" placeholder="Name" v-model="form.name"
                                     :class="{ 'is-invalid': !!form.errors.name }" />
                                 <div class="invalid-feedback">{{ form.errors.name }}</div>
                             </div>
-                            <div class="col-lg-12">
+                            <div class="col-lg-12 mb-3">
                                 <label class="form-label" for="">Type</label>
 
                                 <select class="form-select form-select-lg" :value="form.type" @change="selectType"
@@ -103,7 +99,7 @@
                             <i class="bi bi-x"></i>
                             <span class="mx-2">Close</span>
                         </button>
-                        <button type="button" class="btn btn-info" @click="save">
+                        <button type="button" class="btn btn-success" @click="save">
                             <i class="bi bi-save2"></i>
                             <span class="mx-2">Save</span>
                         </button>
