@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\EmployeeSalarySetup;
 use App\Models\LedgerGroupWithAll;
 use App\Models\Payhead;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
@@ -19,15 +21,16 @@ class PayHeadController extends Controller
 
         $auth = authResource($request);
         $company_id = $auth['company_id'];
-        $payheads = Payhead::query()->where('company_id',$company_id)->with('ledger')->get();
+        $payheads = Payhead::query()->where('company_id', $company_id)->with('ledger')->get();
 
         return Inertia::render('Admin/PayHead/index', compact('auth', 'payheads'));
     }
 
-    public function dropdowns($company_id){
-        return Payhead::query()->where('company_id',$company_id)->get();
+    public function dropdowns($company_id)
+    {
+        return Payhead::query()->where('company_id', $company_id)->get();
     }
-    
+
     /**
      * Show the form for creating a new resource.
      */
@@ -37,7 +40,7 @@ class PayHeadController extends Controller
         return Inertia::render('Admin/PayHead/create', compact('auth'));
     }
 
-       public static function normalizeLedgers($items)
+    public static function normalizeLedgers($items)
     {
         $collection = $items->map(function ($item) {
             $ledgers = $item->ledgers->map(function ($item) {
@@ -61,48 +64,47 @@ class PayHeadController extends Controller
         return $collection;
     }
 
-   public function ledgers(Request $request)
+    public function ledgers(Request $request)
     {
 
 
         $request->validate(['type' => ['required', 'in:earning,dedcutions']]);
         $type = $request->type;
-            $admin = $request->user('web');
+        $admin = $request->user('web');
 
-            $company_id = $admin->company_id;
+        $company_id = $admin->company_id;
 
         if ($type == 'earning') {
             $items = LedgerGroupWithAll::query()
-            ->where('company_id',$company_id)
-            ->whereIn('group_code', [52, 53, 54])->get();
+                ->where('company_id', $company_id)
+                ->whereIn('group_code', [52, 53, 54])->get();
             return static::normalizeLedgers($items);
         } else {
-            $items = LedgerGroupWithAll::query() ->where('company_id',$company_id)->whereIn('group_code', [22])->get();
+            $items = LedgerGroupWithAll::query()->where('company_id', $company_id)->whereIn('group_code', [22])->get();
             return static::normalizeLedgers($items);
         }
     }
-    
+
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-          $request->validate([
-
+        $request->validate([
             'name' => ['required', 'string', Rule::unique('payroll_payheads', 'title')],
             'type' => ['required', 'string', 'in:earning,dedcutions'],
             'ledger' => ['required', 'numeric'],
         ]);
 
-     $admin = $request->user('web');
-    $company_id = $admin->company_id;
+        $admin = $request->user('web');
+        $company_id = $admin->company_id;
         $title = $request->name;
         $type = $request->type;
         $ledger_id = $request->ledger;
 
-       $payhead =  Payhead::updateOrCreate(compact('company_id', 'title'), compact('type', 'ledger_id'));
-       $payhead->load('ledger');
-       return response()->json($payhead);
+        $payhead =  Payhead::updateOrCreate(compact('company_id', 'title'), compact('type', 'ledger_id'));
+        $payhead->load('ledger');
+        return response()->json($payhead);
     }
 
     /**
@@ -132,8 +134,9 @@ class PayHeadController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Payhead $payhead)
     {
-        //
+        Gate::authorize('delete', $payhead);
+        $payhead->delete();
     }
 }

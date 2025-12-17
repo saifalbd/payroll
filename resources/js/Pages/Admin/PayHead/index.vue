@@ -34,12 +34,11 @@
                                     <i class="bi bi-three-dots-vertical"></i>
                                 </button>
                                 <ul class="dropdown-menu">
-
                                     <li><a class="dropdown-item" href="#">
                                             <i class="bi bi-pencil-square"></i>
                                             <span class="mx-2">Edit</span>
                                         </a></li>
-                                    <li><a class="dropdown-item" href="#">
+                                    <li><a class="dropdown-item" @click="remove(item)">
                                             <i class="bi bi-trash"></i>
                                             <span class="mx-2">Delete</span>
                                         </a></li>
@@ -61,7 +60,7 @@
             data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content  relative">
-                   
+
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-lg-12">
@@ -130,6 +129,7 @@ import { useForm } from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
 import LoaderBox from '../../../components/LoaderBox.vue';
 import { head } from 'lodash';
+import { deleteConfirm, deleteError } from '@/utility';
 DataTable.use(DataTablesCore);
 const bootstrap = inject<any>('bootstrap');
 
@@ -207,27 +207,14 @@ const hideModel = () => {
 }
 
 const save = async () => {
-
-
-
     busy.value = true;
     try {
-
-
-
-
         const url = route('admin.payhead.store');
-
-
         const ledger = form.ledger ? form.ledger.value : null;
         const name = form.name;
         const type = form.type;
-
         const { data } = await window.axios.post(url, { ledger, name, type });
-
         payheads.push(data);
-
-
         hideModel();
 
     } catch (error) {
@@ -245,6 +232,22 @@ const save = async () => {
         }
     }
     busy.value = false;
+}
+
+const remove = async (item: PayHead) => {
+    const is = await deleteConfirm(``);
+    if (!is) return;
+    try {
+        const url = route('admin.payhead.destroy', { payhead: item.id });
+        await window.axios.delete(url);
+        const index = payheads.findIndex(e => e.id == item.id);
+        if (index > -1) {
+            payheads.splice(index, 1);
+        }
+    } catch (error) {
+        console.error(error);
+        deleteError(error)
+    }
 }
 
 onMounted(() => {

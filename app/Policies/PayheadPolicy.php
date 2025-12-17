@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Models\Payhead;
+use App\Models\SalaryScaleItem;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
@@ -43,9 +44,18 @@ class PayheadPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Payhead $payhead): bool
+    public function delete(User $user, Payhead $payhead)
     {
-        return false;
+        $has = SalaryScaleItem::query()->where('payhead_id', $payhead->id)->count();
+        if ($has) {
+            return Response::deny("can't remove becouse payhead use on salary items");
+        }
+        $has = SalaryScaleItem::query()->where('payhead_id', $payhead->id)->count();
+        if ($has) {
+            return Response::deny("can't remove becouse payhead use on salary setup items");
+        }
+
+        return Response::allow();
     }
 
     /**
