@@ -1,14 +1,11 @@
 <template>
     <Layout :auth="auth">
-        <nav class="navbar navbar-expand-lg bg-body-tertiary">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="#">Navbar</a>
-                <a type="button" class="btn btn-dark" :href="route('admin.employee.create')">
-                    <i class="bi bi-bookmark-plus"></i>
-                    <span class="mx-2">Create</span>
-                </a>
-            </div>
-        </nav>
+        <div class="container-fluid d-flex justify-content-end align-items-center my-4">
+            <a type="button" class="btn btn-sm btn-primary" :href="route('admin.employee.create')">
+                <i class="bi bi-bookmark-plus"></i>
+                <span class="mx-2">Create</span>
+            </a>
+        </div>
         <main class="container-fluid">
             <DataTable :options="options" class="table table-striped table-hover nowrap">
 
