@@ -277,7 +277,7 @@ import DataTable from 'datatables.net-vue3';
 import DataTablesCore from 'datatables.net-bs5';
 import { route } from 'ziggy-js';
 import { inject, onMounted, reactive, ref } from 'vue';
-import { deleteConfirm } from '../../../utility';
+import { deleteConfirm, deleteError } from '../../../utility';
 const bootstrap = inject<any>('bootstrap');
 DataTable.use(DataTablesCore);
 
@@ -296,12 +296,14 @@ const showModel = (item: Employee) => {
 
 const remove = async (item:Employee)=>{
     const is = await  deleteConfirm(``);
-    
+
+    if(!is) return; 
     try {
         const url = route('admin.employee.destroy',{employee:item.id});
        await window.axios.delete(url);
     } catch (error) {
         console.error(error);
+        deleteError(error)
     }
 }
 onMounted(() => {
