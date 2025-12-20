@@ -11,5 +11,10 @@ class Department extends Model
 
     protected $table = "payroll_departments";
 
-    protected $fillable = ['name'];
+    protected $fillable = ['name','company_id'];
+
+
+    public function employees(){
+        return $this->hasMany(Employee::class,'department_id');
+    }
 }

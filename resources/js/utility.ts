@@ -1,3 +1,4 @@
+import { AxiosError } from 'axios';
 import Swal from 'sweetalert2';
 
 
@@ -20,3 +21,20 @@ export const deleteConfirm = async function (
     return Promise.resolve(false);
   }
 };
+
+
+export const deleteError = function ( error: any) {
+  const { response } = error;
+
+  if (response && response.status == 403) {
+    if(!response.data) return;
+    const data = response.data as {message:string};
+    if(!data) return;
+    Swal.fire({
+      icon: "error",
+      title: `Oops... ${response.status}`,
+      text: `${data.message}`,
+    });
+  } 
+};
+

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Department;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
 class DepartmentController extends Controller
@@ -13,10 +15,10 @@ class DepartmentController extends Controller
      */
     public function index(Request $request)
     {
-         $auth = authResource($request);
-         $departments = Department::query()->get();
+        $auth = authResource($request);
+        $departments = Department::query()->get();
 
-        return Inertia::render('Admin/Department/index',compact('auth','departments'));
+        return Inertia::render('Admin/Department/index', compact('auth', 'departments'));
     }
 
     /**
@@ -24,8 +26,8 @@ class DepartmentController extends Controller
      */
     public function create(Request $request)
     {
-         $auth = authResource($request);
-        return Inertia::render('Admin/Department/create',compact('auth'));
+        $auth = authResource($request);
+        return Inertia::render('Admin/Department/create', compact('auth'));
     }
 
     /**
@@ -33,10 +35,18 @@ class DepartmentController extends Controller
      */
     public function store(Request $request)
     {
+        $admin = $request->user('web');
+        $company_id = $admin->company_id;
         $request->validate([
-            'name'=>['required','required']
+            'name' => ['required', 'required', Rule::unique("payroll_departments", 'name')->where('company_id', $company_id)]
         ]);
-        
+
+        $name = $request->name;
+
+
+        $department = Department::create(compact('company_id', 'name'));
+
+        return response()->json($department);
     }
 
     /**
@@ -58,16 +68,31 @@ class DepartmentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Department $department)
     {
-        //
+        $admin = $request->user('web');
+        $company_id = $admin->company_id;
+        $request->validate([
+            'name' => ['required', 'required', Rule::unique("payroll_departments", 'name')->where('company_id', $company_id)
+                ->whereNot('id', $department->id)]
+        ]);
+
+        $name = $request->name;
+
+
+        $department = $department->update(compact('name'));
+
+
+
+        return response()->json($department);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Department $department)
     {
-        //
+        Gate::authorize('delete', $department);
+        $department->delete();
     }
 }

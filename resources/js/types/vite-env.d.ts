@@ -73,6 +73,18 @@ declare global {
     } | null
   }
 
+  export interface Application {
+    id: number
+    emp_id: number
+    dates: string[]
+    type: string
+    subject: string
+    message: string
+    created_at: string
+    updated_at: string
+    status: number
+    employee:Employee
+}
 
   export interface Employee {
     id: number
@@ -98,11 +110,13 @@ declare global {
     created_at: string
     updated_at: string
     company: Company
+
     department: {
       id: number
       name: string
     }
-    avatar: Thumbnail
+    avatar: string
+    avatarUrl:string
   }
 
 
@@ -211,6 +225,7 @@ declare global {
 
   }
 
+  
   export interface SalaryScale {
     id: number
     title: string
@@ -228,6 +243,21 @@ declare global {
     updated_at: string
 
   }
+
+
+  export interface SalarySetup {
+  id: number
+  company_id: number
+  employee_id: number
+  employee:Employee
+  eff_date: string
+  created_at: string
+  updated_at: string
+ items:ScaleItem[]
+}
+
+
+
 
 
 

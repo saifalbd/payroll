@@ -30,7 +30,7 @@
 
 
                             </div>
-                            <div class="card-body" v-if="auth.has == 'employee'">
+                            <div class="card-body p-2" v-if="auth.has == 'employee'">
 
                                 <div class=" row"></div>
 
@@ -51,7 +51,9 @@
                             </div>
                             <div v-else>
                                 <div class=" row">
-                                    <div class=" col-4"></div>
+                                    <div class=" col-4 d-flex justify-content-center">
+                                        <img class="img-thumbnail my-2" style="width: 200px;" :src="item.employee.avatarUrl" alt="">
+                                    </div>
                                     <div class="col-8">
                                         <h5 class="card-title">{{ item.subject }}</h5>
                                         <p class="card-text">{{ item.message }}</p>
@@ -69,7 +71,8 @@
                                     </div>
 
                                     <div class=" col-4 text-center">
-                                        <small class="">Last Updated: {{ toNow(item.updated_at) }}</small>
+                                        
+                                        <small class="d-block">Last Updated: {{ toNow(item.updated_at) }}</small>
                                     </div>
                                     <div class=" col-8 flex justify-content-end">
                                         <ul class="list-group list-group-horizontal">
@@ -118,17 +121,7 @@
 </template>
 
 <script setup lang="ts">
-interface Application {
-    id: number
-    emp_id: number
-    dates: string[]
-    type: string
-    subject: string
-    message: string
-    created_at: string
-    updated_at: string
-    status: number
-}
+
 import moment from 'moment'
 import Layout from '../../../components/Layout.vue';
 import Swal from 'sweetalert2'

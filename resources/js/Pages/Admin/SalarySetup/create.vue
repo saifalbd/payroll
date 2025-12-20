@@ -1,5 +1,6 @@
 <template>
     <Layout :auth="auth">
+
         <div class="container-fluid d-flex justify-content-between align-items-center my-4">
             <h5 class="fw-bold ms-4" style="color: #e3342f">Create Salary Setup</h5>
             <Link type="button" class="btn btn-sm btn-primary me-4" :href="route('admin.salarySetup.index')">
@@ -7,6 +8,7 @@
                 <span class="mx-2">Back</span>
             </Link>
         </div>
+
         <main class="container-fluid">
             <div class="container relative">
                 <div class="row">
@@ -30,9 +32,9 @@
 
                     <div class="col-4">
                         <label class="form-label" for="">Salary Scale</label>
-                        <VueMultiselect :model-value="salaryScale" @update:model-value="insertPayScale" :options="salaryScales" :searchable="false"
-                            :close-on-select="true" :allow-empty="false" label="title" placeholder="Select Employee"
-                            track-by="title"></VueMultiselect>
+                        <VueMultiselect :model-value="salaryScale" @update:model-value="insertPayScale"
+                            :options="salaryScales" :searchable="false" :close-on-select="true" :allow-empty="false"
+                            label="title" placeholder="Select Employee" track-by="title"></VueMultiselect>
                     </div>
 
 
@@ -139,8 +141,9 @@ import LoaderBox from "../../../components/LoaderBox.vue";
 import { route } from "ziggy-js";
 import { capitalize, head, replace, times } from 'lodash';
 
-const { auth } = defineProps<{
+const { auth, salarySetup } = defineProps<{
     auth: Auth
+    salarySetup?: SalarySetup
 }>();
 
 
@@ -162,6 +165,8 @@ type Item = {
 }
 
 const busy = ref(false)
+
+const title = ref(salarySetup?'Edit Salary setup':'Create Salary Setup');
 
 const calc_types = reactive([
     {
@@ -200,10 +205,45 @@ const form = useForm<{ employee: Dropdown | null, eff_date: string, items: Item[
     employee: null,
     eff_date: '',
     items: [
-     
+
     ]
 
 })
+
+if (salarySetup) {
+
+    form.employee = {
+        value: salarySetup.employee.id,
+        text: salarySetup.employee.employee_name
+    }
+    form.eff_date = salarySetup.eff_date;
+
+    salarySetup.items.forEach(item => {
+
+        var parcentOf = null;
+        if (item.parcent_of) {
+            parcentOf = {
+                text: item.parcent_of.title,
+                value: item.parcent_of.id
+            }
+        }
+
+        const isPercent = item.calc_type != 'flat'
+        form.items.push({
+            calc_type: item.calc_type as any,
+            value: item.value,
+            payhead: {
+                value: item.payhead.id,
+                text: item.payhead.title
+            },
+            formula: item.formula,
+            isPercent,
+            parcentOf,
+            basis: item.basis
+        })
+    })
+
+}
 
 const loadEmployee = async () => {
     try {
@@ -234,18 +274,21 @@ const loadPayheads = async () => {
 
         payheads.value = items;
 
-        items.forEach(item => {
+        if (!salarySetup) {
+            items.forEach(item => {
 
-            form.items.push({
-                calc_type:'flat',
-                value: null,
-                payhead: item,
-                formula: formulas[2].value,
-                isPercent: false,
-                parcentOf: null,
-                basis: ''
-            })
-        });
+                form.items.push({
+                    calc_type: 'flat',
+                    value: null,
+                    payhead: item,
+                    formula: formulas[2].value,
+                    isPercent: false,
+                    parcentOf: null,
+                    basis: ''
+                })
+            });
+        }
+
 
 
 
@@ -270,35 +313,35 @@ const loadSalaryScale = async () => {
 }
 
 
-  const insertPayScale = (val:SalaryScale)=>{
-            salaryScale.value = val;
-            
-            val.items.forEach(item=>{
-                const payhead_id = item.payhead_id;
-                const calc_type = item.calc_type;
-                const value = item.value;
-                const parcent_of_id = item.parcent_of_id;
-                const formula = item.formula;
-                 const isPercent = calc_type == 'formula'
-                 const basis = item.basis;
-                const has = form.items.find(e=>e.payhead && e.payhead.value == item.payhead_id);
+const insertPayScale = (val: SalaryScale) => {
+    salaryScale.value = val;
 
-              
-                if(has){
-                    has.value = value;
-                    has.calc_type = calc_type
-                    has.formula = formula
-                    has.isPercent = isPercent;
-                    if(parcent_of_id){
-                        has.parcentOf = {
-                            text:item.parcent_of.title,
-                            value:item.parcent_of.id
-                        }
-                    }
-                    has.basis = basis;
+    val.items.forEach(item => {
+        const payhead_id = item.payhead_id;
+        const calc_type = item.calc_type;
+        const value = item.value;
+        const parcent_of_id = item.parcent_of_id;
+        const formula = item.formula;
+        const isPercent = calc_type == 'formula'
+        const basis = item.basis;
+        const has = form.items.find(e => e.payhead && e.payhead.value == item.payhead_id);
+
+
+        if (has) {
+            has.value = value;
+            has.calc_type = calc_type
+            has.formula = formula
+            has.isPercent = isPercent;
+            if (parcent_of_id) {
+                has.parcentOf = {
+                    text: item.parcent_of.title,
+                    value: item.parcent_of.id
                 }
-            })
-        };
+            }
+            has.basis = basis;
+        }
+    })
+};
 
 
 
@@ -331,8 +374,15 @@ const save = async () => {
         const eff_date = form.eff_date;
 
         const company_id = auth.company_id;
-        const url = route('admin.salarySetup.store');
-        await window.axios.post(url, { employee, company_id, eff_date, items: list });
+        const params = { employee, company_id, eff_date, items: list }
+        if (salarySetup) {
+            let url = route('admin.salarySetup.update', { salary_setup: salarySetup.id });
+
+            await window.axios.put(url, params);
+        } else {
+            await window.axios.post(route('admin.salarySetup.store'), params);
+        }
+
         window.location.replace(route('admin.salarySetup.index'));
     } catch (error) {
         console.error(error);

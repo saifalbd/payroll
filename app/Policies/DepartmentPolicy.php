@@ -43,9 +43,16 @@ class DepartmentPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Department $department): bool
+    public function delete(User $user, Department $department)
     {
-        return false;
+        $has = $department->employees()->count();
+
+        if($has){
+            return Response::deny("can't remove becouse has employees");
+        }else{
+            return Response::allow();
+        }
+       
     }
 
     /**
