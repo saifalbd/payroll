@@ -41,6 +41,11 @@
             :class="{ 'active': active(['admin.salarySetup.index']) }"
             :href="route('admin.salarySetup.index')">Salary Setup</Link>
           </li>
+          <li class="nav-item" v-if="auth.has == 'admin'">
+            <Link class="nav-link" aria-current="page"
+            :class="{ 'active': active(['admin.Attendance.index']) }"
+            :href="route('admin.Attendance.index')">Attendances</Link>
+          </li>
           <li class="nav-item">
             <Link class="nav-link" aria-current="page"
                   :class="{ 'active': active(['leaveApp.index','admin.leaveApp']) }"

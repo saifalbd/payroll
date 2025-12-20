@@ -8,6 +8,7 @@ use App\Http\Controllers\LeaveRequestController;
 use App\Http\Controllers\PayHeadController;
 use App\Http\Controllers\SalaryScaleController;
 use App\Http\Controllers\SalarySetupController;
+use App\Http\Controllers\AttendanceController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -37,6 +38,11 @@ Route::prefix('/admin')->name('admin.')
         Route::resource("/salary-scales", SalaryScaleController::class)->names("salaryScale");
         Route::get('/salary-scales-dropdowns/{company_id}',[SalaryScaleController::class,'dropdowns'])->name('salaryScale.dropdowns');
         Route::resource("/salary-setups", SalarySetupController::class)->names("salarySetup");
+        Route::resource('/attendances', AttendanceController::class)->names('Attendance');
+        Route::get('/all-attendances', [AttendanceController::class, 'allAttendance'])->name('attendance.all');
+        Route::get('/all-attendance-type', [AttendanceController::class, 'allAttendanceType'])->name('attendance.type.all');
+        Route::post('/update-in-out/{attendance_id}', [AttendanceController::class, 'updateInOut'])->name('attendance.updateInOut');
+        Route::post('/update-attendance-type/{attendance_id}', [AttendanceController::class, 'updateAttendanceType'])->name('attendance.updateType');
         Route::get("/leave-applications", [LeaveRequestController::class, 'adminIndex'])->name("leaveApp");
     });
 
