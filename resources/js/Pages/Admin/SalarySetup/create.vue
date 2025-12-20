@@ -1,14 +1,14 @@
 <template>
     <Layout :auth="auth">
-        <nav class="navbar navbar-expand-lg bg-body-tertiary">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="#">{{ title }}</a>
-                <a type="button" class="btn btn-dark" :href="route('admin.salaryScale.index')">
-                    <i class="bi bi-bookmark-plus"></i>
-                    <span class="mx-2">Back</span>
-                </a>
-            </div>
-        </nav>
+
+        <div class="container-fluid d-flex justify-content-between align-items-center my-4">
+            <h5 class="fw-bold ms-4" style="color: #e3342f">Create Salary Setup</h5>
+            <Link type="button" class="btn btn-sm btn-primary me-4" :href="route('admin.salarySetup.index')">
+                <i class="bi bi-arrow-left"></i>
+                <span class="mx-2">Back</span>
+            </Link>
+        </div>
+
         <main class="container-fluid">
             <div class="container relative">
                 <div class="row">
@@ -101,12 +101,12 @@
                                         <div class="invalid-feedback">{{ form.errors[`items.${index}.basis`] }}</div>
                                     </td>
                                     <td class="pt-2">
-                                        <div class="btn-group me-2 mt-0" role="group" aria-label="First group">
+                                        <div class="me-2 mt-0">
                                             <button type="button" class="btn btn-outline-primary btn-sm"
                                                 @click="clickAdd">
                                                 <i class="bi bi-plus-lg"></i>
                                             </button>
-                                            <button type="button" class="btn btn-outline-danger btn-sm"
+                                            <button type="button" class="btn btn-outline-danger btn-sm ms-1"
                                                 @click="clickRemove(index)">
                                                 <i class="bi bi-x-lg"></i>
                                             </button>
@@ -119,7 +119,7 @@
                     </div>
 
                     <div class="col-12 text-end my-4">
-                        <button class="btn btn-dark" @click="save"><i class="bi bi-save2"></i> <span
+                        <button class="btn btn-success" @click="save"><i class="bi bi-save2"></i> <span
                                 class="mx-2">Save</span></button>
                     </div>
 
@@ -133,7 +133,7 @@
 </template>
 
 <script setup lang="ts">
-import { useForm } from '@inertiajs/vue3';
+import { useForm, Link } from '@inertiajs/vue3';
 import Layout from '../../../components/Layout.vue';
 import VueMultiselect from 'vue-multiselect'
 import { onMounted, reactive, ref } from "vue";
@@ -623,6 +623,7 @@ onMounted(() => {
     tbody {
         td {
             vertical-align: baseline;
+            padding: 5px;
         }
     }
 }

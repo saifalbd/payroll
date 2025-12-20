@@ -1,14 +1,12 @@
 <template>
     <Layout :auth="auth">
-        <nav class="navbar navbar-expand-lg bg-body-tertiary">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="#">Navbar</a>
-                <a type="button" class="btn btn-dark" :href="route('admin.employee.create')">
-                    <i class="bi bi-bookmark-plus"></i>
-                    <span class="mx-2">Create</span>
-                </a>
-            </div>
-        </nav>
+        <div class="container-fluid d-flex justify-content-between align-items-center my-4">
+            <h5 class="fw-bold ms-1" style="color: #e3342f">Employees</h5>
+            <Link type="button" class="btn btn-sm btn-primary" :href="route('admin.employee.create')">
+                <i class="bi bi-bookmark-plus"></i>
+                <span class="mx-2">Create</span>
+            </Link>
+        </div>
         <main class="container-fluid">
             <DataTable :options="options" class="table table-striped table-hover nowrap">
 
@@ -275,6 +273,7 @@ const { auth, employees } = defineProps<{
 }>();
 import DataTable from 'datatables.net-vue3';
 import DataTablesCore from 'datatables.net-bs5';
+import { Link } from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
 import { inject, onMounted, reactive, ref } from 'vue';
 import { deleteConfirm, deleteError } from '../../../utility';

@@ -1,6 +1,6 @@
 <template>
   <nav class="navbar navbar-expand-lg bg-dark-light">
-    <div class="container-fluid ">
+    <div class="container-fluid mx-4">
       <Link class="navbar-brand" :href="auth.has == 'admin' ? route('admin.home') : route('employee.home')">{{
         auth.companyName }}</Link>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
@@ -17,17 +17,17 @@
           <li class="nav-item" v-if="auth.has == 'admin'">
 
             <Link class="nav-link" aria-current="page" :href="route('admin.employee.index')"
-              :class="{ 'active':active(['admin.employee.index']) }">Employes</Link>
+              :class="{ 'active':active(['admin.employee.index']) }">Employees</Link>
           </li>
           <li class="nav-item" v-if="auth.has == 'admin'">
 
             <Link class="nav-link" aria-current="page" :href="route('admin.department.index')"
-              :class="{ 'active': active(['admin.department.index'])}">Department</Link>
+              :class="{ 'active': active(['admin.department.index'])}">Departments</Link>
           </li>
 
           <li class="nav-item" v-if="auth.has == 'admin'">
             <Link class="nav-link" aria-current="page" :href="route('admin.payhead.index')"
-                :class="{ 'active': active(['admin.payhead.index']) }">Payhead</Link>
+                :class="{ 'active': active(['admin.payhead.index']) }">Payheads</Link>
           </li>
 
           <li class="nav-item" v-if="auth.has == 'admin'">
@@ -44,7 +44,7 @@
           <li class="nav-item">
             <Link class="nav-link" aria-current="page"
                   :class="{ 'active': active(['leaveApp.index','admin.leaveApp']) }"
-              :href="auth.has == 'admin' ? route('admin.leaveApp') : route('leaveApp.index')">Leave Application</Link>
+              :href="auth.has == 'admin' ? route('admin.leaveApp') : route('leaveApp.index')">Leave Applications</Link>
 
           </li>
 
@@ -95,3 +95,18 @@ onMounted(() => {
   }
 });
 </script>
+<style scoped>
+.navbar{
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  border-top: 3px solid #f08080;
+  background: rgba(255, 217, 102, .8);
+  transition: .5s ease;
+  z-index: 3;
+  padding: .4rem 1rem .3rem;
+}
+.navbar .nav-item .nav-link{
+  font-weight: 500;
+  font-size: 16px;
+  padding: 0.8rem 1rem;
+}
+</style>

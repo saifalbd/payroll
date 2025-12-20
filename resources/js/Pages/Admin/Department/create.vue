@@ -1,14 +1,12 @@
 <template>
     <Layout :auth="auth">
-        <nav class="navbar navbar-expand-lg bg-body-tertiary">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="#">Create Employee</a>
-                <a type="button" class="btn btn-dark" :href="route('admin.department.index')">
-                    <i class="bi bi-bookmark-plus"></i>
-                    <span class="mx-2">Back</span>
-                </a>
-            </div>
-        </nav>
+        <div class="container-fluid d-flex justify-content-between align-items-center my-4">
+            <h5 class="fw-bold ms-4" style="color: #e3342f">Create Department</h5>
+            <Link type="button" class="btn btn-sm btn-primary me-4" :href="route('admin.department.index')">
+                <i class="bi bi-arrow-left"></i>
+                <span class="mx-2">Back</span>
+            </Link>
+        </div>
         <main class="container-fluid">
             <div class="container relative">
                 <div class="row">
@@ -39,6 +37,7 @@
 </template>
 
 <script setup lang="ts">
+import { Link } from '@inertiajs/vue3';
 import { useForm } from '@inertiajs/vue3';
 import Layout from '../../../components/Layout.vue';
 import Swal from 'sweetalert2'

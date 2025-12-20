@@ -2,13 +2,14 @@
     <Layout :auth="auth">
         <nav class="navbar navbar-expand-lg bg-body-tertiary">
             <div class="container-fluid">
-                <a class="navbar-brand" href="#">Salary Scales</a>
+                <h5 class="fw-bold ms-1" style="color: #e3342f">Salary Scales</h5>
                 <a type="button" class="btn btn-dark" :href="route('admin.salaryScale.create')">
                     <i class="bi bi-bookmark-plus"></i>
                     <span class="mx-2">Create</span>
                 </a>
             </div>
         </nav>
+
         <main class="container-fluid">
             <div v-for="item in salaryScales" class="my-2">
 
@@ -51,6 +52,7 @@
 </template>
 
 <script setup lang="ts">
+import { Link } from '@inertiajs/vue3';
 import Layout from '../../../components/Layout.vue';
 const { auth, salaryScales } = defineProps<{
     auth: Auth,
