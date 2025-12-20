@@ -27,7 +27,8 @@ Route::prefix('/admin')->name('admin.')
     ->middleware('auth:web')
     ->group(function () {
         Route::get('/', [HomeController::class, 'home'])->name('home');
-        Route::resource("/employees", EmployeeController::class)->names("employee");
+        Route::resource("/employees", EmployeeController::class)->except('update')->names("employee");
+        Route::post("/employees/{employee}", [EmployeeController::class,'update'])->name("employee.update");
         Route::get('/employee-dropdowns/{company_id}', [EmployeeController::class, 'dropdowns'])->name('employee.dropdowns');
         Route::resource("departments", DepartmentController::class)->names("department");
         Route::resource("/payheads", PayHeadController::class)->names("payhead");

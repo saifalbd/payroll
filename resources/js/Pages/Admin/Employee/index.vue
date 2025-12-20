@@ -72,7 +72,7 @@
                                             <i class="bi bi-binoculars"></i>
                                             <span class="mx-2">Show</span>
                                         </a></li>
-                                    <li><a class="dropdown-item" href="#">
+                                    <li><a class="dropdown-item" :href="route('admin.employee.edit',{employee:item.id})">
                                             <i class="bi bi-pencil-square"></i>
                                             <span class="mx-2">Edit</span>
                                         </a></li>
@@ -109,8 +109,8 @@
                                     <div class="card-header bg-primary text-white text-center p-4">
                                         <div class="row">
                                             <div class="col-md-4">
-                                                <img src="https://lh3.googleusercontent.com/a/ACg8ocLy_O1AysEBA9LedEX-2WhFhYYUUH0rcDL_Bbb72kgoucpX7MND=s288-c-no"
-                                                    class="rounded-circle border border-3 border-white mb-3"
+                                                <img :src="emp.avatarUrl"
+                                                    class="rounded-circle border-3 border-white mb-3"
                                                     alt="Employee Photo"
                                                     style="width: 120px; height: 120px; object-fit: cover;">
                                             </div>

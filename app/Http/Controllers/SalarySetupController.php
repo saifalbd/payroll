@@ -15,7 +15,12 @@ class SalarySetupController extends Controller
     public function index(Request $request)
     {
         $auth = authResource($request);
-        return Inertia::render('Admin/SalarySetup/index', compact('auth'));
+        $salarySetups = EmployeeSalarySetup::query()->whereHas('employee')->with([
+            'employee',
+            'items' => fn($q) => $q->with(['payhead', 'parcentOf'])
+        ])->get();
+
+        return Inertia::render('Admin/SalarySetup/index', compact('auth', 'salarySetups'));
     }
 
     /**
@@ -71,9 +76,17 @@ class SalarySetupController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Request $request, $id)
     {
-        //
+
+        $salarySetup = EmployeeSalarySetup::findOrFail($id);
+        $salarySetup->load([
+            'employee',
+            'items' => fn($q) => $q->with(['payhead', 'parcentOf'])
+        ]);
+
+        $auth = authResource($request);
+        return Inertia::render('Admin/SalarySetup/create', compact('auth', 'salarySetup'));
     }
 
     /**
@@ -81,7 +94,35 @@ class SalarySetupController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $salarySetup = EmployeeSalarySetup::findOrFail($id);
+
+        $request->validate([
+            'eff_date' => ['required', 'date'],
+            'employee' => ['required', 'numeric'],
+            'items' => ['required', 'array'],
+            'items.*' => ['required', 'array'],
+            'items.*.payhead_id' => ['required', 'numeric'],
+            'items.*.calc_type' => ['required', 'string'],
+            'items.*.value' => ['required', 'numeric'],
+            'items.*.formula' => ['required', 'string'],
+            'items.*.parcent_of_id' => ['nullable', 'numeric'],
+            'items.*.basis' => ['nullable', 'string']
+        ]);
+
+        return DB::transaction(function () use ($request, $salarySetup) {
+            $title = $request->title;
+            $items = $request->items;
+            $employee_id = $request->employee;
+            $eff_date = $request->eff_date;
+            $admin = $request->user('web');
+            $company_id = $admin->company_id;
+            $salarySetup->items()->delete();
+            $salarySetup->update(compact('employee_id', 'eff_date', 'company_id'));
+            foreach ($items as $item) {
+                $salarySetup->items()->create($item);
+            }
+           // return redirect()->route('admin.salarySetup.index');
+        });
     }
 
     /**

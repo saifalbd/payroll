@@ -12,12 +12,8 @@
         <main class="container-fluid">
             <div class="container relative">
                 <div class="row">
-
-
-
                     <div class="row">
                         <div class="col-6">
-
                             <div class="row">
                                 <div class="col-12">
                                     <label class="form-label" for="">Employee ID</label>
@@ -101,11 +97,6 @@
                             :class="{ 'is-invalid': !!form.errors.password }" />
                         <div class="invalid-feedback">{{ form.errors.password }}</div>
                     </div>
-
-
-
-
-
                     <div class="col-12">
                         <label class="form-label" for="">Current Address</label>
                         <input class="form-control" placeholder="Current Address" v-model="form.current_address"
@@ -201,9 +192,10 @@ import { ref } from "vue";
 import LoaderBox from "../../../components/LoaderBox.vue";
 import { values } from "lodash";
 import { head } from "lodash";
-const { auth } = defineProps<{
+const { auth,employee } = defineProps<{
     auth: Auth
-    departments: any
+    departments: any,
+    employee?:Employee
 
 }>();
 const img = ref();
@@ -233,6 +225,27 @@ const form = useForm<any>({
 })
 
 
+
+if(employee){
+    form.employee_id  = employee.employee_id;
+    form.employee_name = employee.employee_name;
+    form.designation = employee.designation;
+    form.department = employee.department;
+    form.email = employee.email;
+    form.contact_no =employee.contact_no;
+    form.linkedin = employee.linkedin;
+    form.nid = employee.nid;
+    form.joining_date = employee.joining_date;
+    form.current_address = employee.current_address;
+    form.permanent_address = employee.permanent_address;
+    form.district = employee.district;
+    form.police_station = employee.police_station;
+    form.village = employee.village;
+    form.father = employee.father;
+    form.mother = employee.mother;
+    img.value = employee.avatarUrl
+    
+}
 const updateSelected = (val: any) => {
     form.department = val;
 }
@@ -270,15 +283,11 @@ const save = async () => {
         if (form.avatar) {
             formData.append("avatar", form.avatar)
         }
-
-
-
-
-
-
-        const url = route("admin.employee.store");
+        var url = route("admin.employee.store");
+        if(employee){
+            url = route('admin.employee.update',{employee:employee.id})
+        }
         const { data } = await window.axios.post(url, formData);
-
         window.location.replace(route('admin.employee.index'));
 
 

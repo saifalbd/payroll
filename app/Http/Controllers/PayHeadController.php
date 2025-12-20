@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\EmployeeSalarySetup;
+use App\Models\Ledger;
 use App\Models\LedgerGroupWithAll;
 use App\Models\Payhead;
 use Illuminate\Http\Request;
@@ -22,6 +23,7 @@ class PayHeadController extends Controller
         $auth = authResource($request);
         $company_id = $auth['company_id'];
         $payheads = Payhead::query()->where('company_id', $company_id)->with('ledger')->get();
+        
 
         return Inertia::render('Admin/PayHead/index', compact('auth', 'payheads'));
     }
@@ -93,7 +95,7 @@ class PayHeadController extends Controller
         $request->validate([
             'name' => ['required', 'string', Rule::unique('payroll_payheads', 'title')],
             'type' => ['required', 'string', 'in:earning,dedcutions'],
-            'ledger' => ['required', 'numeric'],
+            'ledger' => ['required', 'numeric',Rule::exists('ledgers','id')],
         ]);
 
         $admin = $request->user('web');
@@ -126,9 +128,23 @@ class PayHeadController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request,Payhead $payhead)
     {
-        //
+          $request->validate([
+            'name' => ['required', 'string', Rule::unique('payroll_payheads', 'title')->whereNot('id',$payhead)],
+            'type' => ['required', 'string', 'in:earning,dedcutions'],
+            'ledger' => ['required', 'numeric',Rule::exists('ledgers','id')],
+        ]);
+
+        $admin = $request->user('web');
+        $company_id = $admin->company_id;
+        $title = $request->name;
+        $type = $request->type;
+        $ledger_id = $request->ledger;
+
+  $payhead->update( compact('type', 'ledger_id','title'));
+       
+        return response()->json($payhead);
     }
 
     /**

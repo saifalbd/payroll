@@ -142,17 +142,88 @@ class EmployeeController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Request $request, Employee $employee)
     {
-        //
+        $auth = authResource($request);
+        $employee->load('department');
+        $departments = Department::query()->get();
+    
+        return Inertia::render('Admin/Employee/create', compact('auth', 'employee', 'departments'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Employee $employee)
     {
-        //
+          $admin = $request->user('web');
+        $request->validate([
+            "employee_id" => ['required', 'numeric', Rule::unique('payroll_employees', 'employee_id')->whereNot('id',$employee->id)],
+            "employee_name" => ['required', 'string'],
+            "designation" => ['nullable', 'string'],
+            "department" => ['required', 'numeric'],
+            "joining_date" => ['nullable', 'date'],
+            "contact_no" => ['nullable', 'string'],
+            "email" => ['required', 'string', Rule::unique('users', 'email')->whereNot('id',$employee->id)],
+            "linkedin" => ['nullable', 'string'],
+            "nid" => ['nullable', 'string'],
+            "current_address" => ['nullable', 'string'],
+            "permanent_address" => ['nullable', 'string'],
+            "district" => ['nullable', 'string'],
+            "police_station" => ['nullable', 'string'],
+            "post_office" => ['nullable', 'string'],
+            "village" => ['nullable', 'string'],
+            "father" => ['nullable', 'string'],
+            "mother" => ['nullable', 'string'],
+            "avatar" => ['nullable', 'image'],
+            'password' => ['required', 'string']
+        ]);
+
+
+
+        $data = $request->only(
+            'employee_id',
+            "employee_name",
+            "designation",
+            "joining_date",
+            "contact_no",
+            "email",
+            "linkedin",
+            "nid",
+            "current_address",
+            "permanent_address",
+            "district",
+            "police_station",
+            "post_office",
+            "village",
+            "father",
+            "mother"
+        );
+
+
+        $department_id = $request->department;
+
+        $password = Hash::make($request->password);
+        $company_id = $admin->company_id;
+
+        $avatar = $employee->avatar;
+        if ($request->hasFile('avatar')) {
+            $avatar = $this->imageUpload($request->file('avatar'));
+
+            if($employee->avatar){
+           Storage::disk('public')->delete($employee->avatar);
+            }
+ 
+        }
+
+
+        $data = array_merge($data, compact('company_id', 'avatar', 'password', 'department_id'));
+        //  dd($data);
+
+      $employee->update($data);
+
+         $employee->load(['department']);
+        return response()->json( $employee);
     }
 
     /**

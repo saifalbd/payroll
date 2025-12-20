@@ -17,6 +17,7 @@ class SalaryScaleController extends Controller
     {
         $auth = authResource($request);
         $salaryScales = SalaryScale::query()->with(['items' => fn($q) => $q->with(['payhead', 'parcentOf'])])->get();
+      
         return Inertia::render('Admin/SalaryScale/index', compact('auth', 'salaryScales'));
     }
 

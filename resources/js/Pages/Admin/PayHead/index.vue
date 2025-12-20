@@ -34,7 +34,7 @@
                                     <i class="bi bi-three-dots-vertical"></i>
                                 </button>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="#">
+                                    <li><a class="dropdown-item" @click="doEdit(item)">
                                             <i class="bi bi-pencil-square"></i>
                                             <span class="mx-2">Edit</span>
                                         </a></li>
@@ -65,7 +65,7 @@
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="card-header bg-dark-light  text-center p-2">
-                                    <h2>Add Payheads</h2>
+                                    <h2>{{ formTitle }}</h2>
                                 </div>
                             </div>
                             <div class="col-lg-12">
@@ -76,28 +76,23 @@
                             </div>
                             <div class="col-lg-12">
                                 <label class="form-label" for="">Type</label>
-
                                 <select class="form-select form-select-lg" :value="form.type" @change="selectType"
                                     :class="{ 'is-invalid': !!form.errors.type }">
                                     <option v-for="op in types" :value="op.value">{{ op.text }}</option>
-
                                 </select>
                                 <div class="invalid-feedback">{{ form.errors.type }}</div>
                             </div>
                             <div class="col-lg-12" :class="{ 'invalid': !!form.errors.ledger }">
                                 <label class="form-label" for="">Ledger</label>
-
                                 <VueMultiselect :model-value="form.ledger" :options="ledgers" :searchable="false"
                                     :close-on-select="true" :allow-empty="false"
                                     @update:model-value="updateLedgerSelected" label="text" placeholder="Select one"
                                     track-by="text"></VueMultiselect>
-
                                 <div class="invalid-meessage">{{ form.errors.ledger }}</div>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-
                         <button type="button" class="btn btn-danger" data-bs-dismiss="modal" aria-label="Close">
                             <i class="bi bi-x"></i>
                             <span class="mx-2">Close</span>
@@ -149,8 +144,10 @@ const types = [
     },
 ];
 
+const formTitle = ref('Add Pay Head')
 const ledgers = ref<Array<{ text: string, value: number }>>([])
 const form = useForm<any>({
+    id: null,
     name: '',
     type: '',
     ledger: null
@@ -165,11 +162,20 @@ const updateLedgerSelected = (ledger: { text: string, value: number } | null) =>
 
 }
 
-const selectType = (event: Event) => {
+const doEdit = (item: PayHead) => {
+    form.id= item.id;
+    form.name = item.title;
+    form.type = item.type;
+    form.ledger = { value: item.ledger.id, text: item.ledger.title };
+    showModel();
+    loadLedgers(item.type)
+    formTitle.value = `Edit Payhead: ${item.title}`;
 
+}
+
+const selectType = (event: Event) => {
     const target = event.target as HTMLSelectElement;
     const val = target.value;
-
     form.ledger = null;
     ledgers.value = [];
     if (val) {
@@ -201,7 +207,6 @@ const showModel = () => {
     bs.show(document.body)
 }
 const hideModel = () => {
-
     const modal = bootstrap.Modal.getOrCreateInstance('#payheadModal');
     modal.hide();
 }
@@ -209,12 +214,27 @@ const hideModel = () => {
 const save = async () => {
     busy.value = true;
     try {
-        const url = route('admin.payhead.store');
+        const url = form.id ? route('admin.payhead.update', { payhead: form.id }) : route('admin.payhead.store');
         const ledger = form.ledger ? form.ledger.value : null;
         const name = form.name;
         const type = form.type;
-        const { data } = await window.axios.post(url, { ledger, name, type });
-        payheads.push(data);
+        const { data } = await window.axios[form.id ? 'put' : 'post'](url, { ledger, name, type });
+        if (form.id) {
+        const has = payheads.find(e=>e.id == form.id);
+        if(has){
+            has.title = form.name;
+            has.type = form.type;
+            has.ledger = {
+                title:form.ledger.text,
+                id:form.ledger.value
+            }
+
+            
+        }
+        } else {
+            payheads.push(data);
+        }
+
         hideModel();
 
     } catch (error) {
