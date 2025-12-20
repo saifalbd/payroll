@@ -31,6 +31,7 @@
         "moment": "^2.30.1",
         "sweetalert2": "^11.26.4",
         "vue-multiselect": "^3.4.0",
+        "vue-select": "^4.0.0-beta.6",
         "ziggy-js": "^2.6.0"
     }
 }

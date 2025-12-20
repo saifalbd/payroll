@@ -55,4 +55,8 @@ class Employee extends Authenticatable implements MustVerifyEmail
     public function salarySetup(){
         return $this->hasOne(EmployeeSalarySetup::class,'employee_id');
     }
+
+    public function attendances(){
+        return $this->hasMany(Attendance::class,'employee_id');
+    }
 }
