@@ -8,6 +8,7 @@ use App\Http\Controllers\LeaveRequestController;
 use App\Http\Controllers\PayHeadController;
 use App\Http\Controllers\SalaryScaleController;
 use App\Http\Controllers\SalarySetupController;
+use App\Http\Controllers\VoucherController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -38,6 +39,8 @@ Route::prefix('/admin')->name('admin.')
         Route::get('/salary-scales-dropdowns/{company_id}',[SalaryScaleController::class,'dropdowns'])->name('salaryScale.dropdowns');
         Route::resource("/salary-setups", SalarySetupController::class)->names("salarySetup");
         Route::get("/leave-applications", [LeaveRequestController::class, 'adminIndex'])->name("leaveApp");
+        Route::resource('/vouchers',VoucherController::class)->names('voucher');
+        Route::get('/vouchers-find-salary-setup/{employee}',[VoucherController::class,'findSalarySetup'])->name('voucher.findSalarySetup');
     });
 
 

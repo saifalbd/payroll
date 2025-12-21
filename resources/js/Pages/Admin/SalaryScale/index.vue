@@ -44,6 +44,9 @@
                         </div>
 
                     </div>
+                    <div class="card-footer d-flex justify-content-end">
+                        <button class="btn btn-outline-danger" @click="remove(item)">Delete</button>
+                    </div>
                 </div>
 
             </div>
@@ -52,7 +55,7 @@
 </template>
 
 <script setup lang="ts">
-import { Link } from '@inertiajs/vue3';
+
 import Layout from '../../../components/Layout.vue';
 const { auth, salaryScales } = defineProps<{
     auth: Auth,
@@ -61,6 +64,7 @@ const { auth, salaryScales } = defineProps<{
 import DataTable from 'datatables.net-vue3';
 import DataTablesCore from 'datatables.net-bs5';
 import { onMounted, ref } from 'vue';
+import { deleteConfirm } from '@/utility';
 DataTable.use(DataTablesCore);
 const columns = [
     {
@@ -80,10 +84,22 @@ const options = {
 }
 
 const table = ref<HTMLElement>();
+
+const remove = async (item:SalaryScale)=>{
+    const is = deleteConfirm('');
+    if(!is) return null;
+    try {
+    const url = route('admin.salaryScale.destroy',{salary_scale:item.id});
+    await window.axios.delete(url);
+    location.reload()
+    } catch (error) {
+      console.error(error);  
+    }
+}
 onMounted(() => {
 
-  
-  
+
+
 
 })
 </script>

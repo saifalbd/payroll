@@ -3,7 +3,7 @@
 
         <div class="container-fluid d-flex justify-content-between align-items-center my-4">
             <h5 class="fw-bold ms-1" style="color: #e3342f">Departments</h5>
-            <Link type="button" class="btn btn-sm btn-primary" :href="route('admin.department.create')">
+            <Link type="button" class="btn btn-sm btn-primary" @click="doCreate">
                 <i class="bi bi-bookmark-plus"></i>
                 <span class="mx-2">Create</span>
             </Link>

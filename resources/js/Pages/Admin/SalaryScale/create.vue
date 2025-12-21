@@ -13,9 +13,9 @@
 
                     <div class="col-12">
                         <label class="form-label" for="">Pay Scale Name</label>
-                        <input class="form-control" placeholder="Name" v-model="form.name"
-                            :class="{ 'is-invalid': !!form.errors.name }" />
-                        <div class="invalid-feedback">{{ form.errors.name }}</div>
+                        <input class="form-control" placeholder="Name" v-model="form.title"
+                            :class="{ 'is-invalid': !!form.errors.title }" />
+                        <div class="invalid-feedback">{{ form.errors.title }}</div>
                     </div>
 
                     <div class="col-12">
@@ -178,9 +178,9 @@ const formulas = reactive([
 
 
 const payheads = ref([])
-const form = useForm<{ name: string | null, items: Item[] }>({
+const form = useForm<{ title: string | null, items: Item[] }>({
 
-    name: null,
+    title: null,
     items: [
         {
             calc_type: 'flat',
@@ -238,7 +238,8 @@ const save = async () => {
         });
 
         const url = route('admin.salaryScale.store');
-        await window.axios.post(url, { title: form.name, items: list })
+        await window.axios.post(url, { title: form.title, items: list })
+        window.location.replace(route('admin.salaryScale.index'));
     } catch (error) {
         console.error(error);
         const response = (error as any).response;
@@ -311,20 +312,20 @@ const changeOparetor = (event: Event, item: Item) => {
     });
 }
 
-const changeParcentOf = (val:Dropdown, item: Item) => {
+const changeParcentOf = (val: Dropdown, item: Item) => {
     form.clearErrors()
     item.parcentOf = val;
 
 
-    if(item.payhead?.value)
+    if (item.payhead?.value)
 
-    if (item.calc_type != 'flat') {
-        form.items.forEach((o, index) => {
-            if (o.calc_type == 'formula') {
-                applyBasis(o, index)
-            }
-        });
-    };
+        if (item.calc_type != 'flat') {
+            form.items.forEach((o, index) => {
+                if (o.calc_type == 'formula') {
+                    applyBasis(o, index)
+                }
+            });
+        };
 
 }
 const addRate = (event: Event, item: Item) => {
@@ -364,7 +365,7 @@ const applyBasis = (item: Item, index: number) => {
         let val = item.basis;
         const formula = item.formula;
         var hasVal = 0;
-        const has = form.items.filter((e,i)=>index !=i).find(e => e.payhead && e.payhead.value == parcentOf.value);
+        const has = form.items.filter((e, i) => index != i).find(e => e.payhead && e.payhead.value == parcentOf.value);
         if (has) {
             if (!has.value) throw `Pay Head for Calculation Base Payhead ${parcentOf.text} Rate are invalid not found`;
             hasVal = has.value;

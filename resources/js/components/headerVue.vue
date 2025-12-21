@@ -17,36 +17,41 @@
           <li class="nav-item" v-if="auth.has == 'admin'">
 
             <Link class="nav-link" aria-current="page" :href="route('admin.employee.index')"
-              :class="{ 'active':active(['admin.employee.index']) }">Employees</Link>
+              :class="{ 'active': active(['admin.employee.index']) }">Employees</Link>
           </li>
           <li class="nav-item" v-if="auth.has == 'admin'">
 
             <Link class="nav-link" aria-current="page" :href="route('admin.department.index')"
-              :class="{ 'active': active(['admin.department.index'])}">Departments</Link>
+              :class="{ 'active': active(['admin.department.index']) }">Departments</Link>
           </li>
 
           <li class="nav-item" v-if="auth.has == 'admin'">
             <Link class="nav-link" aria-current="page" :href="route('admin.payhead.index')"
-                :class="{ 'active': active(['admin.payhead.index']) }">Payheads</Link>
+              :class="{ 'active': active(['admin.payhead.index']) }">Payheads</Link>
           </li>
 
           <li class="nav-item" v-if="auth.has == 'admin'">
-            <Link class="nav-link" aria-current="page"
-             :class="{ 'active': active(['admin.salaryScale.index']) }"
-              :href="route('admin.salaryScale.index')" >Salary Scales</Link>
+            <Link class="nav-link" aria-current="page" :class="{ 'active': active(['admin.salaryScale.index']) }"
+              :href="route('admin.salaryScale.index')">Salary Scales</Link>
           </li>
 
           <li class="nav-item" v-if="auth.has == 'admin'">
-            <Link class="nav-link" aria-current="page"
-            :class="{ 'active': active(['admin.salarySetup.index']) }"
-            :href="route('admin.salarySetup.index')">Salary Setup</Link>
+            <Link class="nav-link" aria-current="page" :class="{ 'active': active(['admin.salarySetup.index']) }"
+              :href="route('admin.salarySetup.index')">Salary Setup</Link>
           </li>
           <li class="nav-item">
             <Link class="nav-link" aria-current="page"
-                  :class="{ 'active': active(['leaveApp.index','admin.leaveApp']) }"
+              :class="{ 'active': active(['leaveApp.index', 'admin.leaveApp']) }"
               :href="auth.has == 'admin' ? route('admin.leaveApp') : route('leaveApp.index')">Leave Applications</Link>
 
           </li>
+          <li class="nav-item" v-if="auth.has == 'admin'">
+            <Link class="nav-link" aria-current="page"
+              :class="{ 'active': active(['admin.voucher.index', 'admin.voucher.create']) }"
+              :href="route('admin.voucher.index')">Vouchers</Link>
+
+          </li>
+
 
         </ul>
         <form class="d-flex" role="search">
@@ -80,9 +85,9 @@ const bootstrap = inject('bootstrap');
 const collapse = ref(false);
 const page = usePage();
 
-const active = (urls:string[])=>{
-  const list = urls.map(e=>route(e,{},false));
-  return list.findIndex(p=>page.url.startsWith(p)) >-1;
+const active = (urls: string[]) => {
+  const list = urls.map(e => route(e, {}, false));
+  return list.findIndex(p => page.url.startsWith(p)) > -1;
 }
 
 onMounted(() => {
@@ -96,7 +101,7 @@ onMounted(() => {
 });
 </script>
 <style scoped>
-.navbar{
+.navbar {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   border-top: 3px solid #f08080;
   background: rgba(255, 217, 102, .8);
@@ -104,7 +109,8 @@ onMounted(() => {
   z-index: 3;
   padding: .4rem 1rem .3rem;
 }
-.navbar .nav-item .nav-link{
+
+.navbar .nav-item .nav-link {
   font-weight: 500;
   font-size: 16px;
   padding: 0.8rem 1rem;

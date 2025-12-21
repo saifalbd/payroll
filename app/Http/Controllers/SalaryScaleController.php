@@ -43,8 +43,8 @@ class SalaryScaleController extends Controller
      */
     public function store(Request $request)
     {
-
-        $company_id = $request->company_id;
+     $admin = $request->user('web');
+        $company_id = $admin->company_id;
         $request->validate([
             'title' => ['required', 'string', Rule::unique('payroll_salary_scales', 'title')->where('company_id', $request->company_id)],
             'items' => ['required', 'array'],
@@ -94,8 +94,9 @@ class SalaryScaleController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(SalaryScale $salaryScale)
     {
-        //
+        $salaryScale->items()->delete();
+        $salaryScale->delete();
     }
 }

@@ -20,7 +20,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="item in payheads">
+                    <tr v-for="item in list">
                         <td class="text-left  capitalize">{{ item.title }}</td>
                         <td class="text-left  capitalize">{{ item.type }}</td>
                         <td class="text-left capitalize">{{ item.ledger.title }}</td>
@@ -40,16 +40,12 @@
                                             <i class="bi bi-trash"></i>
                                             <span class="mx-2">Delete</span>
                                         </a></li>
-
                                 </ul>
                             </div>
                         </td>
                         </td>
-
                     </tr>
                 </tbody>
-
-
             </DataTable>
         </main>
 
@@ -84,7 +80,7 @@
                             </div>
                             <div class="col-lg-12" :class="{ 'invalid': !!form.errors.ledger }">
                                 <label class="form-label" for="">Ledger</label>
-                                <VueMultiselect :model-value="form.ledger" :options="ledgers" :searchable="false"
+                                <VueMultiselect :model-value="form.ledger" :options="ledgers" :searchable="true"
                                     :close-on-select="true" :allow-empty="false"
                                     @update:model-value="updateLedgerSelected" label="text" placeholder="Select one"
                                     track-by="text"></VueMultiselect>
@@ -118,7 +114,7 @@ const { auth, payheads } = defineProps<{
 }>();
 import DataTable from 'datatables.net-vue3';
 import DataTablesCore from 'datatables.net-bs5';
-import { inject, onMounted, ref } from 'vue';
+import { inject, onMounted, reactive, ref } from 'vue';
 import VueMultiselect from 'vue-multiselect'
 import { useForm } from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
@@ -129,6 +125,7 @@ DataTable.use(DataTablesCore);
 const bootstrap = inject<any>('bootstrap');
 
 
+const list = reactive(payheads);
 const options = {
     paging: false
 }
@@ -163,7 +160,7 @@ const updateLedgerSelected = (ledger: { text: string, value: number } | null) =>
 }
 
 const doEdit = (item: PayHead) => {
-    form.id= item.id;
+    form.id = item.id;
     form.name = item.title;
     form.type = item.type;
     form.ledger = { value: item.ledger.id, text: item.ledger.title };
@@ -220,19 +217,19 @@ const save = async () => {
         const type = form.type;
         const { data } = await window.axios[form.id ? 'put' : 'post'](url, { ledger, name, type });
         if (form.id) {
-        const has = payheads.find(e=>e.id == form.id);
-        if(has){
-            has.title = form.name;
-            has.type = form.type;
-            has.ledger = {
-                title:form.ledger.text,
-                id:form.ledger.value
-            }
+            const has = list.find(e => e.id == form.id);
+            if (has) {
+                has.title = form.name;
+                has.type = form.type;
+                has.ledger = {
+                    title: form.ledger.text,
+                    id: form.ledger.value
+                }
 
-            
-        }
+
+            }
         } else {
-            payheads.push(data);
+            list.push(data);
         }
 
         hideModel();
@@ -260,9 +257,9 @@ const remove = async (item: PayHead) => {
     try {
         const url = route('admin.payhead.destroy', { payhead: item.id });
         await window.axios.delete(url);
-        const index = payheads.findIndex(e => e.id == item.id);
+        const index = list.findIndex(e => e.id == item.id);
         if (index > -1) {
-            payheads.splice(index, 1);
+            list.splice(index, 1);
         }
     } catch (error) {
         console.error(error);
