@@ -70,7 +70,7 @@ class PayHeadController extends Controller
     {
 
 
-        $request->validate(['type' => ['required', 'in:earning,dedcutions']]);
+        $request->validate(['type' => ['required', 'in:earning,dedcution']]);
         $type = $request->type;
         $admin = $request->user('web');
 
@@ -94,7 +94,7 @@ class PayHeadController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', Rule::unique('payroll_payheads', 'title')],
-            'type' => ['required', 'string', 'in:earning,dedcutions'],
+            'type' => ['required', 'string', 'in:earning,dedcution'],
             'ledger' => ['required', 'numeric',Rule::exists('ledgers','id')],
         ]);
 

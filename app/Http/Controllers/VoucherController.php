@@ -2,10 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Attendance;
 use App\Models\Employee;
 use App\Models\Payhead;
+use App\Models\Voucher;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+
+use function Symfony\Component\Clock\now;
 
 class VoucherController extends Controller
 {
@@ -16,35 +21,50 @@ class VoucherController extends Controller
     {
 
         $auth = authResource($request);
-        return Inertia::render('Admin/Voucher/index', compact('auth'));
+        $vouchers = Voucher::query()->with([
+            'employee:id,employee_name,avatar',
+            'items' => fn($q) => $q->with('payhead')
+        ])->get();
+
+        return Inertia::render('Admin/Voucher/index', compact('auth', 'vouchers'));
     }
 
-
-    public function findSalarySetup(Employee $employee){
-        $setup = $employee->salarySetup;
-        $name = $employee->employee_name;
-         abort_if(!$setup,404,"Selary Setup Not found by employee: $name");
-        $setup->load('items.payhead');
-        return response()->json($setup);
-    }
 
     /**
      * Show the form for creating a new resource.
      */
     public function create(Request $request)
     {
-            $auth = authResource($request);
+        $auth = authResource($request);
 
-            $admin = $request->user('web');
+        $admin = $request->user('web');
         $company_id = $admin->company_id;
 
-        $employees = Employee::query()->select('id','employee_name','avatar')->where('company_id',$company_id)->get();
-        $payheads = Payhead::query()->where('company_id',$company_id)->get();
-        
-        
+        $employees = Employee::query()->select('id', 'employee_name', 'avatar')
+            ->with([
+                'salarySetup' => fn($q) => $q->with(['items' => fn($q) => $q->with('payhead')])
+            ])
+            ->where('company_id', $company_id)->get();
 
-            
-        return Inertia::render('Admin/Voucher/create', compact('auth','employees','payheads'));
+
+
+
+        $payheads = Payhead::query()->where('company_id', $company_id)->get();
+
+
+        return Inertia::render('Admin/Voucher/create', compact('auth', 'employees', 'payheads'));
+    }
+
+    public function absentCount(Request $request)
+    {
+        $request->validate([
+            'month' => ['required', 'string', 'starts_with:20'],
+            'employee_id' => ['required', 'numeric']
+        ]);
+
+        $month = $request->month;
+        $employee_id = $request->employee_id;
+        return Attendance::query()->where('employee_id', $employee_id)->where('attendance_type', 1)->where('date', "LIKE", "$month%")->count();
     }
 
     /**
@@ -52,7 +72,32 @@ class VoucherController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'items' => ['required', 'array'],
+            'items.*' => ['required', 'array'],
+            'items.*.employee_id' => ['required', 'numeric'],
+            'items.*.total' => ['required', 'numeric'],
+            'items.*.date' => ['required', 'date'],
+            'items.*.items' => ['required', 'array'],
+            'items.*.items.*' => ['required', 'array'],
+            'items.*.items.*.amount' => ['required', 'numeric'],
+            'items.*.items.*.payhead' => ['required', 'numeric'],
+        ]);
+
+        $items = $request->items;
+
+        foreach ($items as $item) {
+            $employee_id = $item['employee_id'];
+            $amount = $item['total'];
+            $date = $item['date'];
+            $voucher = Voucher::create(compact('employee_id', 'amount', 'date'));
+
+            foreach ($item['items'] as $o) {
+                $amount = $o['amount'];
+                $payhead_id = $o['payhead'];
+                $voucher->items()->create(compact('amount', 'payhead_id'));
+            }
+        }
     }
 
     /**

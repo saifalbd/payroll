@@ -9,6 +9,10 @@ use App\Http\Controllers\PayHeadController;
 use App\Http\Controllers\SalaryScaleController;
 use App\Http\Controllers\SalarySetupController;
 use App\Http\Controllers\VoucherController;
+
+use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\SettingController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -29,18 +33,36 @@ Route::prefix('/admin')->name('admin.')
     ->group(function () {
         Route::get('/', [HomeController::class, 'home'])->name('home');
         Route::resource("/employees", EmployeeController::class)->except('update')->names("employee");
-        Route::post("/employees/{employee}", [EmployeeController::class,'update'])->name("employee.update");
+        Route::post("/employees/{employee}", [EmployeeController::class, 'update'])->name("employee.update");
         Route::get('/employee-dropdowns/{company_id}', [EmployeeController::class, 'dropdowns'])->name('employee.dropdowns');
         Route::resource("departments", DepartmentController::class)->names("department");
         Route::resource("/payheads", PayHeadController::class)->names("payhead");
         Route::get('/payhead-ledgers', [PayHeadController::class, 'ledgers'])->name('payhead.ledgers');
         Route::get('/payhead-dropdowns/{company_id}', [PayHeadController::class, 'dropdowns'])->name('payhead.dropdowns');
         Route::resource("/salary-scales", SalaryScaleController::class)->names("salaryScale");
-        Route::get('/salary-scales-dropdowns/{company_id}',[SalaryScaleController::class,'dropdowns'])->name('salaryScale.dropdowns');
+        Route::get('/salary-scales-dropdowns/{company_id}', [SalaryScaleController::class, 'dropdowns'])->name('salaryScale.dropdowns');
         Route::resource("/salary-setups", SalarySetupController::class)->names("salarySetup");
+        Route::resource('/attendances', AttendanceController::class)->names('Attendance');
+        Route::get('/all-attendances', [AttendanceController::class, 'allAttendance'])->name('attendance.all');
+        Route::get('/all-attendance-type', [AttendanceController::class, 'allAttendanceType'])->name('attendance.type.all');
+        Route::post('/update-in-out/{attendance_id}', [AttendanceController::class, 'updateInOut'])->name('attendance.updateInOut');
+        Route::post('/update-attendance-type/{attendance_id}', [AttendanceController::class, 'updateAttendanceType'])->name('attendance.updateType');
         Route::get("/leave-applications", [LeaveRequestController::class, 'adminIndex'])->name("leaveApp");
-        Route::resource('/vouchers',VoucherController::class)->names('voucher');
-        Route::get('/vouchers-find-salary-setup/{employee}',[VoucherController::class,'findSalarySetup'])->name('voucher.findSalarySetup');
+        Route::resource('/vouchers', VoucherController::class)->names('voucher');
+        Route::get('/vouchers-absent-count', [VoucherController::class, 'absentCount'])->name('voucher.absentCount');
+
+
+
+
+        Route::prefix('/settings')->name('setting.')->controller(SettingController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::post('/attendance', 'attendenceStore')->name('attendenceStore');
+             Route::get('/attendance', 'getAttendence')->name('getAttendence');
+        });
+
+        Route::prefix('/report')->name('report.')->controller(ReportController::class)->group(function(){
+            Route::get('/salary_sheet','salarySheet')->name('salarySheet');
+        });
     });
 
 

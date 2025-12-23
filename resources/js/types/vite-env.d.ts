@@ -15,7 +15,7 @@ declare global {
 
   interface Auth {
     companyName: string
-    company_id:number
+    company_id: number
     name: string
     id: number
     avatar: string
@@ -83,8 +83,8 @@ declare global {
     created_at: string
     updated_at: string
     status: number
-    employee:Employee
-}
+    employee: Employee
+  }
 
   export interface Employee {
     id: number
@@ -116,7 +116,7 @@ declare global {
       name: string
     }
     avatar: string
-    avatarUrl:string
+    avatarUrl: string
   }
 
 
@@ -183,6 +183,7 @@ declare global {
 
 
 
+
   export interface Thumbnail {
     id: number
     company_id: any
@@ -199,7 +200,7 @@ declare global {
     url: string
   }
 
-
+  export type CalcType = 'formula' | 'attendance' | 'flat';
   export interface Ledger {
     id: number
     title: string
@@ -215,9 +216,9 @@ declare global {
   export interface ScaleItem {
     scale_id: number
     payhead_id: number
-    payhead:PayHead
-    parcent_of:PayHead
-    calc_type: string
+    payhead: PayHead
+    parcent_of: PayHead
+    calc_type: CalcType
     value: number
     parcent_of_id: number
     formula: '+' | '-' | '/' | '*'
@@ -225,13 +226,13 @@ declare global {
 
   }
 
-  
+
   export interface SalaryScale {
     id: number
     title: string
     created_at: string
     updated_at: string
-    items:ScaleItem[]
+    items: ScaleItem[]
   }
   export interface PayHead {
 
@@ -246,18 +247,37 @@ declare global {
 
 
   export interface SalarySetup {
-  id: number
-  company_id: number
-  employee_id: number
-  employee:Employee
-  eff_date: string
-  created_at: string
-  updated_at: string
- items:ScaleItem[]
-}
+    id: number
+    company_id: number
+    employee_id: number
+    employee: Employee
+    eff_date: string
+    created_at: string
+    updated_at: string
+    items: ScaleItem[]
+  }
 
 
+  export interface Voucher {
+    id: number
+    employee_id: number
+    amount: number
+    date: string
+    created_at: string
+    updated_at: string
+    employee: Employee
+    items: VoucherItem[]
+  }
 
+  export interface VoucherItem {
+    id: number
+    voucher_id: number
+    payhead_id: number
+    amount: number
+    created_at: string
+    updated_at: string
+    payhead: PayHead
+  }
 
 
 
@@ -277,3 +297,11 @@ declare module '@inertiajs/core' {
   interface PageProps extends InertiaPageProps, AppPageProps { }
 }
 
+
+
+export namespace Setting {
+   export interface Attendance {
+    start:string
+    end:string
+   }
+}

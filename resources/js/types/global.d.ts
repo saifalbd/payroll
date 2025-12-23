@@ -98,6 +98,7 @@ declare global {
       name: string
     }
     avatar: Thumbnail
+    salary_setup:SalarySetup
   }
 
 
@@ -217,7 +218,7 @@ declare global {
 
     id: number
     title: string
-    type: string
+    type: 'earning'|'dedcution'
     ledger: Ledger
     created_at: string
     updated_at: string

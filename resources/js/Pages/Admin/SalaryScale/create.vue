@@ -82,7 +82,7 @@
                                         <div class="invalid-feedback">{{ form.errors[`items.${index}.basis`] }}</div>
                                     </td>
                                     <td class="pt-2">
-                                        <div class="me-2 mt-0">
+                                        <div class="me-2 mt-0 d-flex">
                                             <button type="button" class="btn btn-outline-primary btn-sm"
                                                 @click="clickAdd">
                                                 <i class="bi bi-plus-lg"></i>
@@ -133,7 +133,7 @@ type Dropdown = {
     value: string | number
 }
 
-type CalcType = 'formula' | 'flat';
+
 
 type Item = {
     calc_type: CalcType
@@ -147,7 +147,7 @@ type Item = {
 
 const busy = ref(false)
 
-const calc_types = reactive([
+const calc_types = reactive<Array<{ text: string, value: CalcType }>>([
     {
         value: 'formula',
         text: 'Formula'
@@ -155,6 +155,10 @@ const calc_types = reactive([
     {
         value: 'flat',
         text: 'Flat'
+    },
+    {
+        value: 'attendance',
+        text: 'Attendance'
     },
 ]);
 const formulas = reactive([

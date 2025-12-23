@@ -13,18 +13,14 @@
             <Link class="nav-link" aria-current="page"
               :href="auth.has == 'admin' ? route('admin.home') : route('employee.home')">Home</Link>
           </li>
-
           <li class="nav-item" v-if="auth.has == 'admin'">
-
             <Link class="nav-link" aria-current="page" :href="route('admin.employee.index')"
               :class="{ 'active': active(['admin.employee.index']) }">Employees</Link>
           </li>
           <li class="nav-item" v-if="auth.has == 'admin'">
-
             <Link class="nav-link" aria-current="page" :href="route('admin.department.index')"
               :class="{ 'active': active(['admin.department.index']) }">Departments</Link>
           </li>
-
           <li class="nav-item" v-if="auth.has == 'admin'">
             <Link class="nav-link" aria-current="page" :href="route('admin.payhead.index')"
               :class="{ 'active': active(['admin.payhead.index']) }">Payheads</Link>
@@ -39,6 +35,10 @@
             <Link class="nav-link" aria-current="page" :class="{ 'active': active(['admin.salarySetup.index']) }"
               :href="route('admin.salarySetup.index')">Salary Setup</Link>
           </li>
+          <li class="nav-item" v-if="auth.has == 'admin'">
+            <Link class="nav-link" aria-current="page" :class="{ 'active': active(['admin.Attendance.index']) }"
+              :href="route('admin.Attendance.index')">Attendances</Link>
+          </li>
           <li class="nav-item">
             <Link class="nav-link" aria-current="page"
               :class="{ 'active': active(['leaveApp.index', 'admin.leaveApp']) }"
@@ -49,23 +49,40 @@
             <Link class="nav-link" aria-current="page"
               :class="{ 'active': active(['admin.voucher.index', 'admin.voucher.create']) }"
               :href="route('admin.voucher.index')">Vouchers</Link>
-
           </li>
+          <li class="nav-item" v-if="auth.has == 'admin'">
+            <Link class="nav-link" aria-current="page" :class="{ 'active': active(['admin.report.salarySheet']) }"
+              :href="route('admin.report.salarySheet')">Salary Sheet</Link>
+          </li>
+
 
 
         </ul>
         <form class="d-flex" role="search">
-
           <Link v-if="auth.has == 'employee'" :href="route('employeeLogout')" method="post" as="button"
             class="btn btn-warning">
             <i class="bi bi-person-lock"></i>
             <span class="mx-1">Logout</span>
           </Link>
-          <Link v-else-if="auth.has == 'admin'" :href="route('adminLogout')" method="post" as="button"
-            class="btn btn-warning">
-            <i class="bi bi-person-lock"></i>
-            <span class="mx-1">Logout</span>
-          </Link>
+
+          <div class="dropdown" v-else-if="auth.has == 'admin'">
+            <button class="btn btn-outline-warning dropdown-toggle" type="button" id="dropdownMenu2"
+              data-bs-toggle="dropdown" aria-expanded="false">
+              {{ auth.name }}
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+              <li><button class="dropdown-item" type="button">Action</button></li>
+              <li><a class="dropdown-item" :href="route('admin.setting.index')">Setting</a></li>
+              <li>
+                <Link :href="route('adminLogout')" method="post" as="button" class="dropdown-item">
+                  <i class="bi bi-person-lock"></i>
+                  <span class="mx-1">Logout</span>
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+
         </form>
       </div>
     </div>
@@ -77,11 +94,10 @@ import { inject, onMounted, ref } from 'vue';
 
 import { Link, usePage } from '@inertiajs/vue3'
 import { route } from 'ziggy-js';
-import { act } from 'react';
 const { auth } = defineProps<{
   auth: Auth
 }>()
-const bootstrap = inject('bootstrap');
+const bootstrap = inject<any>('bootstrap');
 const collapse = ref(false);
 const page = usePage();
 
@@ -101,6 +117,7 @@ onMounted(() => {
 });
 </script>
 <style scoped>
+/*
 .navbar {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   border-top: 3px solid #f08080;
@@ -115,4 +132,5 @@ onMounted(() => {
   font-size: 16px;
   padding: 0.8rem 1rem;
 }
+  */
 </style>

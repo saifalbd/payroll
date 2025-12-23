@@ -152,7 +152,7 @@ type Dropdown = {
     value: string | number
 }
 
-type CalcType = 'formula' | 'flat';
+
 
 type Item = {
     calc_type: CalcType
@@ -168,7 +168,7 @@ const busy = ref(false)
 
 const title = ref(salarySetup?'Edit Salary setup':'Create Salary Setup');
 
-const calc_types = reactive([
+const calc_types = reactive<Array<{ text: string, value: CalcType }>>([
     {
         value: 'formula',
         text: 'Formula'
@@ -176,6 +176,10 @@ const calc_types = reactive([
     {
         value: 'flat',
         text: 'Flat'
+    },
+     {
+        value: 'attendance',
+        text: 'Attendance'
     },
 ]);
 const formulas = reactive([
@@ -373,8 +377,10 @@ const save = async () => {
         const employee = form.employee ? form.employee.value : null;
         const eff_date = form.eff_date;
 
+
         const company_id = auth.company_id;
-        const params = { employee, company_id, eff_date, items: list }
+        const params = { employee, company_id, eff_date, items: list };
+      
         if (salarySetup) {
             let url = route('admin.salarySetup.update', { salary_setup: salarySetup.id });
 

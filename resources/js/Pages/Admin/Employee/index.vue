@@ -37,7 +37,7 @@
                 <tbody>
                     <tr v-for="item in employees">
                         <td class="text-center">
-                            <img v-if="item.avatar" class="h-16 w-16" :src="item.avatar.url" alt="">
+                            <img v-if="item.avatarUrl" class="img-thumbnail" style="height: 50px;" :src="item.avatarUrl" alt="">
                         </td>
                         <td class="text-center">{{ item.employee_id }}</td>
                         <td class="text-center">

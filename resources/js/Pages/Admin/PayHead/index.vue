@@ -136,7 +136,7 @@ const types = [
         text: 'Earning'
     },
     {
-        value: 'dedcutions',
+        value: 'dedcution',
         text: 'Dedcutions'
     },
 ];
@@ -267,9 +267,6 @@ const remove = async (item: PayHead) => {
     }
 }
 
-onMounted(() => {
-
-})
 
 </script>
 
