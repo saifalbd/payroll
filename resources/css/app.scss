@@ -66,3 +66,41 @@ color: var(--bs-danger);
     color: #e3342f;
     font-weight: bold;
 }
+
+
+.payslip{
+
+
+
+.base-info-row{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px 0;
+        .base-info {
+    list-style-type: none;
+    display: grid;
+    grid-template-columns: 160px auto;
+    margin-bottom: 0;
+    padding-left: 0;
+
+    li {
+        padding: 5px 0;
+        &:first-child {
+            font-weight: bold;
+    
+        }
+    }
+}
+}
+ 
+@media print {
+     .container{
+        
+        width: 100% !important;
+        max-width: 100%;
+        
+    }
+}
+   
+}

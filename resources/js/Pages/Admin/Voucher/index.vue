@@ -28,6 +28,7 @@
                         <td>{{ item.employee.employee_name }}</td>
                         <td class="text-end">{{ item.amount }}</td>
                         <td class="text-end">
+                            <a class="btn btn-outline-info" :href="route('admin.voucher.show',{voucher:item.id})">PaySlip</a>
                             <button class="btn btn-outline-info" @click="showModel(item)">Details</button>
                         </td>
                     </tr>

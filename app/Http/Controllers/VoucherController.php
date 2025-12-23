@@ -45,13 +45,7 @@ class VoucherController extends Controller
                 'salarySetup' => fn($q) => $q->with(['items' => fn($q) => $q->with('payhead')])
             ])
             ->where('company_id', $company_id)->get();
-
-
-
-
         $payheads = Payhead::query()->where('company_id', $company_id)->get();
-
-
         return Inertia::render('Admin/Voucher/create', compact('auth', 'employees', 'payheads'));
     }
 
@@ -103,9 +97,17 @@ class VoucherController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Request $request, Voucher $voucher)
     {
-        //
+
+        $auth = authResource($request);
+        $voucher->load([
+            'employee.department',
+            'items' => fn($q) => $q->with('payhead')
+        ]);
+
+   
+        return Inertia::render('Admin/Voucher/paySlip', compact('auth', 'voucher'));
     }
 
     /**
