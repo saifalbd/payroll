@@ -41,6 +41,7 @@ Route::prefix('/admin')->name('admin.')
         Route::resource('/attendances', AttendanceController::class)->names('Attendance');
         Route::get('/all-attendances', [AttendanceController::class, 'allAttendance'])->name('attendance.all');
         Route::get('/all-attendance-type', [AttendanceController::class, 'allAttendanceType'])->name('attendance.type.all');
+        Route::get('/daily-attendance', [AttendanceController::class, 'dailyAttendance'])->name('attendance.daily');
         Route::post('/update-in-out/{attendance_id}', [AttendanceController::class, 'updateInOut'])->name('attendance.updateInOut');
         Route::post('/update-attendance-type/{attendance_id}', [AttendanceController::class, 'updateAttendanceType'])->name('attendance.updateType');
         Route::get("/leave-applications", [LeaveRequestController::class, 'adminIndex'])->name("leaveApp");

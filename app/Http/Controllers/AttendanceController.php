@@ -40,6 +40,29 @@ class AttendanceController extends Controller
         
     }
 
+    public function dailyAttendance(Request $request)
+    {
+        $date = $request->query('date');
+
+        $auth = authResource($request);
+        $company_id = $auth['company_id'];
+
+        $employee = Employee::where('company_id', $company_id)->with([
+            'attendances'=> function ($query) use($date) {
+                $query->where('date', date('Y-m-d', strtotime($date)))
+                ->select('id', 'date', 'employee_id', 'attendance_type');
+            },
+            'attendances.attendanceType',
+            'attendances.inOuts'
+        ])->get(['id', 'employee_name', 'employee_id']);
+
+        return $employee->map(function($emp){
+            $emp->attendance = $emp->attendances->first();
+            unset($emp->attendances);
+            return $emp;
+        });
+    }
+
     public function allAttendanceType(){
         return AttendanceType::all();
     }
