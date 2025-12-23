@@ -19,13 +19,13 @@
                         <tr v-for="(emp, index) in employees" :key="emp.id ?? index">
                             <td>{{ emp.employee_name }}</td>
                             <td class="text-right">{{ emp.employee_id }}</td>
-                            <td class="text-right">
+                            <td class="text-center">
                                 <button v-if="emp.attendance?.attendance_type" @click.prevent="updateModal(emp.attendance, emp.employee_name, emp.id)" :class="getAttClass(emp.attendance.attendance_type.id)" class="btn btn-sm">{{emp.attendance.attendance_type.short_type}}</button>
                                 <button v-else @click.prevent="openAttendanceModal(emp)" class="btn btn-sm btn-outline-secondary dropdown-toggle"></button>
                             </td>
                             <!-- Time In / Out -->
                             <td class="text-center">
-                                <template v-if="emp.attendance">
+                                <div v-if="emp.attendance">
                                     <div v-if="emp.attendance.in_outs?.length">
                                         <div
                                             v-for="(io, ioIndex) in emp.attendance.in_outs"
@@ -35,8 +35,26 @@
                                         </div>
                                     </div>
                                     <div v-else>-</div>
-                                </template>
-                                <div v-else>-</div>
+                                </div>
+                                <div v-else style="position: relative;">
+                                    <div class="text-primary" role="button" style="width: 26px; position: absolute; top: 0px; right:5px" @click.prevent="editTimeInOut(emp)">
+                                        <i class="bi bi-pencil-fill"></i>
+                                    </div>
+                                    <div class="row" v-if="timeEditMode && attendanceForm.employee_id === emp.id">
+                                        <div class="col-md-5 mt-3">
+                                            <label class="mb-0" for="time_in">Select time in:</label>
+                                            <input type="time" v-model="attendanceForm.time_in" class="form-control form-control-sm" :class="{ 'is-invalid': errors.time_in }">
+                                            <div class="invalid-feedback" v-if="errors.time_in">{{ errors.time_in[0] }}</div>
+                                        </div>
+                                        <div class="col-md-5 mt-3">
+                                            <label class="mb-0" for="time_in">Select time out:</label>
+                                            <input type="time" v-model="attendanceForm.time_out" class="form-control form-control-sm">
+                                        </div>
+                                        <div class="col-md-1 mt-3 d-flex align-items-end">
+                                            <button @click.prevent="saveAttendance" class="btn btn-sm btn-success mt-4">Save</button>
+                                        </div>
+                                    </div>
+                                </div>
                             </td>
 
                             <!-- Status -->
@@ -84,12 +102,12 @@
                         <div class="row" v-if="attendanceForm.type == 1">
                             <div class="col-md-6 mt-3">
                                 <label class="mb-0" for="time_in">Select time in:</label>
-                                <input type="time" v-model="attendanceForm.time_in" class="form-control form-control-sm" :class="{ 'is-invalid': errors.time_in }" name="time_in" min="9:00" max="21:00">
+                                <input type="time" v-model="attendanceForm.time_in" class="form-control form-control-sm" :class="{ 'is-invalid': errors.time_in }" name="time_in">
                                 <div class="invalid-feedback" v-if="errors.time_in">{{ errors.time_in[0] }}</div>
                             </div>
                             <div class="col-md-6 mt-3">
                                 <label class="mb-0" for="time_in">Select time out:</label>
-                                <input type="time" v-model="attendanceForm.time_out" class="form-control form-control-sm" name="time_in" min="9:00" max="21:00">
+                                <input type="time" v-model="attendanceForm.time_out" class="form-control form-control-sm" name="time_in">
                             </div>
                         </div>
                         <button @click.prevent="saveAttendance" class="btn btn-sm btn-success w-100 mt-4">Save</button>
@@ -128,11 +146,11 @@
                             <div v-for="(in_out,in_out_index) in attUpdateForm.in_outs" :key="'inout'+in_out_index" class="row">
                                 <div class="col-md-5 mt-3">
                                     <label class="mb-0" for="time_in">Select time in:</label>
-                                    <input type="time" v-model="in_out.time_in" class="form-control form-control-sm" name="time_in" min="9:00" max="21:00">
+                                    <input type="time" v-model="in_out.time_in" class="form-control form-control-sm" name="time_in">
                                 </div>
                                 <div class="col-md-5 mt-3">
                                     <label class="mb-0" for="time_in">Select time out:</label>
-                                    <input type="time" v-model="in_out.time_out" class="form-control form-control-sm" name="time_in" min="9:00" max="21:00">
+                                    <input type="time" v-model="in_out.time_out" class="form-control form-control-sm" name="time_in">
                                 </div>
                                 <div class="col-md-2 mt-3 d-flex flex-column-reverse">
                                     <button @click="updateInOut(in_out)" class="btn btn-sm btn-success">Update</button>
@@ -186,7 +204,7 @@ interface EmployeeAttendance {
     employee_name: string;
     employee_id: number;
     avatarUrl?: string;
-    attendance: Attendance | null; // ✅ single object
+    attendance: Attendance | null; 
 }
 
 interface attendanceStoreForm {
@@ -233,6 +251,7 @@ const attUpdateForm = ref<attendanceUpdateForm>({
     in_outs:[],
 });
 
+const timeEditMode = ref(false);
 const errors = ref<Record<string, string[]>>({});
 const employees = ref<EmployeeAttendance[]>([]);
 const attendanceTypes = ref<AttendanceType[]>([]);
@@ -254,11 +273,34 @@ const openAttendanceModal = (emp: any)=>{
     bs.show(document.body)
 };
 
+const editTimeInOut = (emp: any)=>{
+    timeEditMode.value = true;
+    errors.value = {};
+
+    attendanceForm.value.employee_id = emp.id;
+    attendanceForm.value.date = selectedDate.value;
+    attendanceForm.value.type = 1;
+    attendanceForm.value.emp_name = emp.employee_name;
+};
+
 const saveAttendance = async()=>{
     try{
         const url = `/admin/attendances`;
         const { data } = await window.axios.post(url, attendanceForm.value);
-        fetchDailyAttendance();
+        const employeeIndex = employees.value.findIndex(emp => emp.id === attendanceForm.value.employee_id);
+        if (employeeIndex !== -1) {
+            employees.value[employeeIndex] = data.employee;
+        }
+        timeEditMode.value = false;
+        attendanceForm.value = {
+            employee_id:null,
+            emp_name:'',
+            day:0,
+            date:null,
+            type:null,
+            time_in:'',
+            time_out:'',
+        };
         const bs = bootstrap.Modal.getOrCreateInstance('#attendanceModal');
         bs.hide();
     }

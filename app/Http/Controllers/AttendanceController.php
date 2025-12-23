@@ -95,6 +95,7 @@ class AttendanceController extends Controller
 
         $auth = authResource($request);
         $company_id = $auth['company_id'];
+        $date = $request->date;
 
         $attendance = Attendance::where('company_id', $company_id)->where('employee_id', $request->employ_id)
         ->where('date',$request->date)->first();
@@ -116,6 +117,19 @@ class AttendanceController extends Controller
                 ]);
             }
         }
+
+        $employee = Employee::where('company_id', $company_id)->where('id', $request->employee_id)->with([
+            'attendances'=> function ($query) use($date) {
+                $query->where('date', date('Y-m-d', strtotime($date)))
+                ->select('id', 'date', 'employee_id', 'attendance_type');
+            },
+            'attendances.attendanceType',
+            'attendances.inOuts'
+        ])->first(['id', 'employee_name', 'employee_id']);
+
+        $employee->attendance = $employee->attendances->first();
+        unset($employee->attendances);
+        return response(['employee'=>$employee], 200);
     }
 
     public function updateInOut(Request $request, $attendance_id){

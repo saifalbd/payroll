@@ -4,14 +4,14 @@
             <h5 class="ms-1 page-title" role="button" @click="sub_menu=!sub_menu">Attendance</h5>
         </div>
         <div v-if="sub_menu" class="d-flex gap-3 align-items-center mb-3 ps-2">
-            <div class="fw-bold" :class="selected_page === 'sheet' ? 'page-title' : 'text-secondary'" role="button" @click="selected_page='sheet'">Attendance Sheet</div>
-            <div class="fw-bold" :class="selected_page === 'details' ? 'page-title' : 'text-secondary'" role="button" @click="selected_page='details'">Attendance Details</div>
-        </div>
-        <div v-if="selected_page == 'sheet'">
-            <attendanceSheet></attendanceSheet>
+            <div class="fw-bold" :class="selected_page === 'details' ? 'page-title' : 'text-secondary'" role="button" @click="selected_page='details'">Attendance Daily</div>
+            <div class="fw-bold" :class="selected_page === 'sheet' ? 'page-title' : 'text-secondary'" role="button" @click="selected_page='sheet'">Attendance Sheet Monthly</div>
         </div>
         <div v-if="selected_page == 'details'">
             <attendanceDetails></attendanceDetails> 
+        </div>
+        <div v-if="selected_page == 'sheet'">
+            <attendanceSheet></attendanceSheet>
         </div>
     </Layout>
 </template>
@@ -25,5 +25,5 @@ const { auth } = defineProps<{
     auth: Auth
 }>();
 const sub_menu = ref(false);
-const selected_page = ref('sheet');
+const selected_page = ref('details');
 </script>
