@@ -6,6 +6,8 @@ use App\Models\Attendance;
 use App\Models\AttendanceInOut;
 use App\Models\AttendanceType;
 use App\Models\Employee;
+use App\Models\Setting;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -50,7 +52,7 @@ class AttendanceController extends Controller
         $employee = Employee::where('company_id', $company_id)->with([
             'attendances'=> function ($query) use($date) {
                 $query->where('date', date('Y-m-d', strtotime($date)))
-                ->select('id', 'date', 'employee_id', 'attendance_type');
+                ->select('id', 'date', 'employee_id', 'attendance_type', 'is_late');
             },
             'attendances.attendanceType',
             'attendances.inOuts'
@@ -103,11 +105,28 @@ class AttendanceController extends Controller
 
         }
         else{
+            $is_late = 0;
+
+            if ($request->type == 1 && !empty($request->time_in)) {
+                $attendanceIn = Carbon::parse($request->time_in);
+                
+                $setting = Setting::getModel($company_id, Setting::DAY_LIMIT);
+                
+                if (!empty($setting['start'])) {
+                    $startTime = Carbon::parse($setting['start']);
+
+                    if ($attendanceIn->gt($startTime)) {
+                        $is_late = 1;
+                    }
+                }
+            }
+
             $new_attendance = Attendance::create([
                 'company_id'        =>$company_id,
                 'employee_id'       =>$request->employee_id,
                 'date'              =>$request->date,
                 'attendance_type'   =>$request->type,
+                'is_late'           =>$is_late
             ]);
             if($request->type == 1){
                 AttendanceInOut::create([

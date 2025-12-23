@@ -22,6 +22,7 @@
                             <td class="text-center">
                                 <button v-if="emp.attendance?.attendance_type" @click.prevent="updateModal(emp.attendance, emp.employee_name, emp.id)" :class="getAttClass(emp.attendance.attendance_type.id)" class="btn btn-sm">{{emp.attendance.attendance_type.short_type}}</button>
                                 <button v-else @click.prevent="openAttendanceModal(emp)" class="btn btn-sm btn-outline-secondary dropdown-toggle"></button>
+                                <span class="fw-bold ms-1 text-warning" v-if="emp.attendance?.is_late">(Late)</span>
                             </td>
                             <!-- Time In / Out -->
                             <td class="text-center">
@@ -197,6 +198,7 @@ interface Attendance {
     day: number | null;
     in_outs: InOut[];
     attendance_type: AttendanceType;
+    is_late: number;
 }
 
 interface EmployeeAttendance {
