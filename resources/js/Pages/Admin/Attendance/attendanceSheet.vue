@@ -72,12 +72,12 @@
                         <div class="row" v-if="attendanceForm.type == 1">
                             <div class="col-md-6 mt-3">
                                 <label class="mb-0" for="time_in">Select time in:</label>
-                                <input type="time" v-model="attendanceForm.time_in" class="form-control form-control-sm" :class="{ 'is-invalid': errors.time_in }" name="time_in" min="9:00" max="21:00">
+                                <input type="time" v-model="attendanceForm.time_in" class="form-control form-control-sm" :class="{ 'is-invalid': errors.time_in }" max="21:00">
                                 <div class="invalid-feedback" v-if="errors.time_in">{{ errors.time_in[0] }}</div>
                             </div>
                             <div class="col-md-6 mt-3">
                                 <label class="mb-0" for="time_in">Select time out:</label>
-                                <input type="time" v-model="attendanceForm.time_out" class="form-control form-control-sm" name="time_in" min="9:00" max="21:00">
+                                <input type="time" v-model="attendanceForm.time_out" class="form-control form-control-sm" max="21:00">
                             </div>
                         </div>
                         <button @click.prevent="saveAttendance" class="btn btn-sm btn-success w-100 mt-4">Save</button>
@@ -116,11 +116,11 @@
                             <div v-for="(in_out,in_out_index) in attUpdateForm.in_outs" :key="'inout'+in_out_index" class="row">
                                 <div class="col-md-5 mt-3">
                                     <label class="mb-0" for="time_in">Select time in:</label>
-                                    <input type="time" v-model="in_out.time_in" class="form-control form-control-sm" name="time_in" min="9:00" max="21:00">
+                                    <input type="time" v-model="in_out.time_in" class="form-control form-control-sm" max="21:00">
                                 </div>
                                 <div class="col-md-5 mt-3">
                                     <label class="mb-0" for="time_in">Select time out:</label>
-                                    <input type="time" v-model="in_out.time_out" class="form-control form-control-sm" name="time_in" min="9:00" max="21:00">
+                                    <input type="time" v-model="in_out.time_out" class="form-control form-control-sm" max="21:00">
                                 </div>
                                 <div class="col-md-2 mt-3 d-flex flex-column-reverse">
                                     <button @click="updateInOut(in_out)" class="btn btn-sm btn-success">Update</button>

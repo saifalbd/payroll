@@ -12,6 +12,7 @@ class Attendance extends Model
         'employee_id',
         'date',
         'attendance_type',
+        'is_late'
     ];
 
     public function attendanceType()
